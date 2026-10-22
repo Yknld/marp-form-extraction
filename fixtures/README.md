@@ -69,4 +69,4 @@ An existing nonempty output directory is rejected. Source content is repeatable;
 
 ## Remaining coverage
 
-This is a starter corpus, not exhaustive coverage or a measured extraction benchmark. Real handwriting, real pen strokes, severe photocopy damage, stamps over text, annotations, password-protected or damaged PDFs, legacy .doc files, French question translations, cropped/missing pages, and duplicate submissions still need separate cases. Later evaluation should measure answer accuracy, Yes/No accuracy, review recall, false review rate, and failed-file handling. No extractor has been implemented or benchmarked yet.
+This is a starter corpus, not exhaustive coverage. Real handwriting, real pen strokes, severe photocopy damage, stamps over text, annotations, password-protected PDFs, legacy .doc files, French question translations, and cropped/missing pages still need separate cases. Batch unit tests cover damaged files and byte-identical duplicate submissions. See [the benchmark](../docs/BENCHMARK.md) for the current extractor's measured results and unsupported cases.

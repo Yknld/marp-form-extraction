@@ -40,4 +40,4 @@ python scripts/generate_anti_racism_fixtures.py --output /path/to/new-empty-dire
 python scripts/validate_anti_racism_fixtures.py /path/to/new-empty-directory
 ```
 
-Without an argument, the validator checks the committed corpus. Validation checks fixture structure, answer-key consistency, activity text and continuation joins, not the accuracy of an extractor. Extraction code is still to be implemented.
+Without an argument, the validator checks the committed corpus. Validation checks fixture structure, answer-key consistency, activity text and continuation joins, not extraction accuracy. The separate `evaluate_extraction.py` script evaluates the Python extractor against these keys.

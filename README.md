@@ -1,6 +1,29 @@
 # MARP form extraction
 
-Question inventory for the Multiculturalism and Anti-Racism Program (MARP) Final Activity Report – Events Component.
+Python extraction of Multiculturalism and Anti-Racism Program (MARP) Word documents and selectable-text PDFs, with source locations and review flags. The first version supports the supplied English Events Component and Anti-Racism Call inventories.
+
+## Run
+
+Use Python 3.10 or newer. Run these commands from this repository's root, installing dependencies in your approved environment:
+
+```bash
+python -m pip install -r requirements.txt
+python -m marp --input /path/to/forms --output /path/to/results
+```
+
+Windows example:
+
+```powershell
+python -m marp --input "C:\Forms" --output "C:\Results"
+```
+
+The extractor runs locally. It does not require Microsoft Word, Excel, Adobe Acrobat, LibreOffice, an API key, or a network connection once dependencies are installed. LibreOffice/Poppler are only used by the synthetic-file generators.
+
+The output contains `extracted_responses.xlsx`, full `results.jsonl`, a `summary.json`, and per-file `checkpoints`. The workbook has **Files**, **Responses**, **Activities**, and **Unmatched** sheets. Review flags and reasons are separate columns. Each activity has its own row; original text is retained alongside interpreted values.
+
+Rerun the same command to resume. Completed unchanged files are loaded from checkpoints; input changes, code/schema changes, and dependency-version changes invalidate the relevant cache. Use `--no-resume` to force extraction. Individual file failures appear in the Files sheet and do not stop other files. Source files are read only. The output directory's generated workbook is replaced on each run, so save manual review edits in a separate copy.
+
+See [scope and review guidance](docs/EXTRACTION.md) and the [synthetic benchmark](docs/BENCHMARK.md).
 
 ## Files
 
@@ -11,7 +34,7 @@ The inventory was prepared from a Word sample named marp (1).docx. Field IDs are
 
 ## Project scope
 
-This inventory is the starting point for future code that extracts responses from Word documents and PDFs whose layout may vary. Extraction code has not yet been implemented.
+Question labels and table structure guide extraction. Unknown forms, French versions, the legacy Events variant, scans, and unsupported visual selections require further work or review. This release is a pilot implementation, not a claim of accuracy on the 1,000+ real submissions.
 
 The repository contains question definitions and fictional test forms. Real completed forms and respondent answers belong in the approved work environment.
 
@@ -29,6 +52,6 @@ The combined corpora contain **68 synthetic files**. Run `python scripts/validat
 
 ## Review flags
 
-The workbook includes **Review required** (Not assessed / Yes / No) and **Review reason**. All fields start as Not assessed. These are placeholders in the question inventory; the future extractor will create separate review flags for each response in each submitted form.
+Question inventories include **Review required** (Not assessed / Yes / No) and **Review reason**. The extractor's output uses Yes / No flags for each response, activity row, and file. The Anti-Racism inventory also records unresolved source questions.
 
-Flag missing questions, unclear answer boundaries, ambiguous checkboxes, unreadable text, and invalid field formats for review. Keep blank answers distinct from No and N/A. A No review flag will mean no automated issue was detected, not that a human verified the response.
+Missing questions, ambiguous checkboxes, unread pages, invalid field formats, and other detected issues are flagged. Blank answers remain distinct from No and N/A. A No review flag means no automated issue was detected, not that a human verified the response.

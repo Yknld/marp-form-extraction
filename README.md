@@ -13,7 +13,13 @@ The inventory was prepared from a Word sample named marp (1).docx. Field IDs are
 
 This inventory is the starting point for future code that extracts responses from Word documents and PDFs whose layout may vary. Extraction code has not yet been implemented.
 
-The repository contains question definitions only. Completed forms and respondent answers belong in the approved work environment.
+The repository contains question definitions and fictional test forms. Real completed forms and respondent answers belong in the approved work environment.
+
+## Synthetic extraction test suite
+
+[Browse the test suite and coverage guide](fixtures/README.md). It includes 52 fictional files: 20 DOCX forms and 32 PDFs, with known answers and per-response review flags. PDF files include actual Word conversions, scan simulations, interactive checkboxes/radio buttons, and graphical selection marks.
+
+Run `python scripts/validate_fixtures.py` to validate the checked-in suite. The generator supports a 1,052-file throughput batch; see the coverage guide for prerequisites and commands. Large batches repeat scenario families and do not establish real-world accuracy.
 
 ## Review flags
 

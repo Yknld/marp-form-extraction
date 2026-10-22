@@ -1,0 +1,28 @@
+{
+  "files": 52,
+  "docx": 20,
+  "pdf": 32,
+  "variants": [
+    "ascii_x",
+    "unicode_checks",
+    "native_controls",
+    "both_selected",
+    "neither_selected",
+    "reversed_options",
+    "typed_answers",
+    "circled_choice",
+    "crossed_out",
+    "extra_rows",
+    "bulleted_lists",
+    "page_continuation",
+    "missing_question",
+    "reordered_sections",
+    "numeric_edge_cases",
+    "contradictory_followup",
+    "header_words_in_answer",
+    "merged_cells",
+    "long_answers",
+    "accents_and_mixed_fonts"
+  ],
+  "synthetic": true
+}

@@ -29,12 +29,13 @@ Open `C:\MARP\Results\extracted_responses.xlsx`:
 The workbook has **one sheet**, with **one row per input file**:
 
 - **Submission ID** is the first column (from the filename, preserving leading zeros).
+- **Flagged** is the second column, immediately after Submission ID.
 - Each **question is a column heading**, with the extracted answer underneath.
 - Repeated activities are numbered inside three cells: description, completed, participant count.
 - **Flagged** and **Reason** identify files needing review and the affected questions.
 - Source file, processing status and unmatched text appear at the end.
 
-The first column and header row stay visible when scrolling. Filters let you show only flagged files. Headers and answers wrap; expand row heights or use the formula bar to read long text. Matching question labels from different form versions are qualified so their answers stay separate. Questions from other form versions remain blank. Duplicate IDs remain separate rows and are flagged.
+The first two columns and header row stay visible when scrolling. Filters let you show only flagged files. Headers and answers wrap; expand row heights or use the formula bar to read long text. Matching question labels from different form versions are qualified so their answers stay separate. Questions from other form versions remain blank. Duplicate IDs remain separate rows and are flagged.
 
 No in Flagged means no automated issue was detected, not that someone verified the answer. Compare a pilot batch against the originals before processing all submissions.
 
@@ -72,3 +73,11 @@ Keep real forms and extracted responses in your approved work environment, outsi
 Missing or invalid PDF font measurements (`FontBBox`) do not necessarily stop extraction. Repeated instances of this warning are summarized once in that file's Excel Reason column and set Flagged to Yes. Compare its extracted text against the original; this change does not repair the PDF. Other PDF diagnostics remain visible.
 
 `Unsupported template` is separate: the text did not match a supported form version. The file keeps its row and submission ID, with a review reason, but its question cells are not filled. Consult Reason to distinguish an unknown template from a recognized unsupported French or legacy version.
+
+### Answers without printed instructions
+
+Authorized Signature is excluded from the output and does not generate missing-signature flags. Printed signatory name and sign-off date remain separate columns. The parser still recognizes signature headings to keep that text out of preceding answers.
+
+Known printed bilingual-material and authorized-signatory notes are removed, including wrapped versions. Respondent notes and quoted question labels are preserved. The cleaner uses specific wording; it does not discard every line starting with Note. Other unrecognized instructions may still require review.
+
+Multiple question labels in a cell and side-by-side table headings are handled separately. Where the following answers cannot be assigned confidently, their text is kept under Unmatched text and flagged instead of being guessed. The Excel-only command and output path are unchanged.

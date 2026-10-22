@@ -25,7 +25,7 @@ def workbook(results, target):
     families = [name for name in schemas if any(r["template_id"] == name for r in results)]
     if not families:
         families = list(schemas)
-    fields = [(family, q) for family in families for q in schemas[family]]
+    fields = [(family, q) for family in families for q in schemas[family] if q["response_type"] != "Signature"]
     counts = Counter(q["question"].casefold() for _, q in fields)
     labels = {"marp_events": "Events", "marp_anti_racism_call": "Anti-Racism"}
     columns = []
@@ -39,15 +39,15 @@ def workbook(results, target):
                         ("completed_raw", "Activities — completed?"),
                         ("participant_count_raw", "Activities — participant count")]
     has_activities = any(r.get("activities") for r in results)
-    headers = ["Submission ID"] + [label for _, label in columns]
+    headers = ["Submission ID", "Flagged"] + [label for _, label in columns]
     if has_activities:
         headers += [label for _, label in activity_columns]
-    headers += ["Flagged", "Reason", "Source file", "Status", "Unmatched text"]
+    headers += ["Reason", "Source file", "Status", "Unmatched text"]
     rows = []
     for result in results:
         answers = {a["field_id"]: a for a in result.get("responses", [])}
         reasons = [readable(x) for x in result.get("review_reasons", [])]
-        row = [text(result["submission_id"])]
+        row = [text(result["submission_id"]), "No"]
         for (family, fid), label in columns:
             a = answers.get(fid) if result["template_id"] == family else None
             row.append(text(a["answer_text"]) if a else "")
@@ -63,7 +63,8 @@ def workbook(results, target):
         if result.get("error"):
             reasons.append(result["error"])
         flagged = result.get("review_required", False) or bool(reasons)
-        row += ["Yes" if flagged else "No", "\n".join(dict.fromkeys(reasons)),
+        row[1] = "Yes" if flagged else "No"
+        row += ["\n".join(dict.fromkeys(reasons)),
                 text(result["relative_path"]), readable(result["status"]).capitalize(),
                 "\n\n".join(a["text"] for a in result.get("unmatched", []))]
         rows.append([text(v) for v in row])
@@ -81,7 +82,7 @@ def workbook(results, target):
     ws = wb.active
     ws.title = "Responses"
     ws.sheet_view.showGridLines = False
-    ws.freeze_panes = "B2"
+    ws.freeze_panes = "C2"
     ws.append(expanded_headers)
     for row in expanded_rows:
         ws.append(row)

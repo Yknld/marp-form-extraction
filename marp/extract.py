@@ -131,7 +131,7 @@ def _read_pdf(path):
                 for ri,(row,vals) in enumerate(zip(table.rows,values),1):
                     cells=[Cell(v or "",v or "") for v in vals]
                     if any(c.text for c in cells):
-                        regions.append((row.bbox[1],row.bbox[0],Block(cells,{"page":number,"table_on_page":ti,"row":ri,"bbox":list(row.bbox)},True)))
+                        regions.append((row.bbox[1],row.bbox[0],Block(cells,{"page":number,"table_on_page":ti,"row":ri,"bbox":list(row.bbox),"cell_bboxes":list(row.cells)},True)))
             def outside(obj):
                 if obj.get("object_type")!="char": return True
                 x=(obj["x0"]+obj["x1"])/2; y=(obj["top"]+obj["bottom"])/2
@@ -232,6 +232,108 @@ def remove_prompt(text, prompt):
     return text
 
 
+
+# Only these known printed instructions are discarded, never arbitrary "Note:" prose.
+PRINTED_NOTES = [
+    "Note: If applicable, you may submit copies of your bilingual resources or material you have developed for this event along with your final report.",
+    "Note: The authorized signatory must be the same person, or hold the same authorization to sign official documents, as the person who signed the contribution agreement.",
+    "Note: The authorized signatory must be the same person, or hold the same authorization to sign official documents, as the person who signed the application form.",
+]
+
+
+def wording_pattern(wording):
+    return r"[\W_]*".join(re.escape(word) for word in norm(wording).split())
+
+
+def clean_blocks(blocks):
+    # Match full known notes across cell/page boundaries; preserve all other text
+    # and each cell's original source location and direct-strikethrough state.
+    for attr in ("text", "active"):
+        cells = [cell for block in blocks for cell in block.cells]
+        joined = "\n".join(getattr(c, attr) for c in cells)
+        spans = []
+        for note in PRINTED_NOTES:
+            pattern = r"(?<!\w)\*?\s*" + wording_pattern(note) + r"[.]*"
+            spans.extend((m.start(), m.end()) for m in re.finditer(pattern, joined, re.I))
+        offset = 0
+        for cell in cells:
+            value = getattr(cell, attr)
+            fragments = []
+            cursor = 0
+            for start, end in sorted(spans):
+                lo, hi = max(0, start-offset), min(len(value), end-offset)
+                if hi > lo:
+                    fragments.append(value[cursor:lo]); cursor = max(cursor, hi)
+            fragments.append(value[cursor:])
+            setattr(cell, attr, "".join(fragments).strip())
+            offset += len(value)+1
+    return blocks
+
+
+def question_segments(cell, fields):
+    """Split only complete labels at line boundaries or in a label-led block."""
+    hits = []
+    starts_with_question = match_question(cell.text, fields) is not None
+    for f in fields:
+        for m in re.finditer(wording_pattern(f["question"]), cell.text, re.I):
+            if m.start() and cell.text[m.start()-1].isalnum(): continue
+            if m.end()<len(cell.text) and cell.text[m.end()].isalnum(): continue
+            prefix = cell.text[:m.start()]
+            line_prefix = prefix.rsplit("\n", 1)[-1]
+            at_line_start = not line_prefix.strip(" \t*•-0123456789.)")
+            # Inline labels are accepted only when this block already begins
+            # with a recognized question and the label isn't quoted.
+            quoted = prefix.rstrip().endswith(('"', "'", '“', '‘'))
+            if not quoted and (at_line_start or starts_with_question):
+                start=m.start()-len(line_prefix) if at_line_start else m.start()
+                decoration=re.search(r"[ \t]*\*[ \t]*$", cell.text[:start])
+                if decoration: start=decoration.start()
+                hits.append((start, m.end(), f))
+    accepted = []
+    for hit in sorted(hits, key=lambda h: (h[0], -(h[1]-h[0]))):
+        if not accepted or hit[0] >= accepted[-1][1]: accepted.append(hit)
+    if not accepted: return [(match_question(cell.text, fields), cell)]
+    segments = []
+    if cell.text[:accepted[0][0]].strip():
+        segments.append((None, Cell(cell.text[:accepted[0][0]], cell.active[:accepted[0][0]], cell.corrected)))
+    # Match active text separately: strikethroughs can change character offsets.
+    active_hits = []
+    active_cursor = 0
+    for _, _, f in accepted:
+        match = re.search(wording_pattern(f["question"]), cell.active[active_cursor:], re.I)
+        start = active_cursor+match.start() if match else active_cursor
+        active_hits.append(start)
+        if match: active_cursor += match.end()
+    for i,(start,end,f) in enumerate(accepted):
+        stop = accepted[i+1][0] if i+1<len(accepted) else len(cell.text)
+        active_stop = active_hits[i+1] if i+1<len(accepted) else len(cell.active)
+        segments.append((f, Cell(cell.text[start:stop].strip(), cell.active[active_hits[i]:active_stop].strip(), cell.corrected)))
+    return segments
+
+
+def assemble_headings(blocks, fields):
+    """Join wrapped non-table headings only while they remain a known prefix."""
+    out=[]; i=0
+    while i<len(blocks):
+        b=blocks[i]
+        if not b.is_table and len(b.cells)==1:
+            start=norm(b.cells[0].text)
+            candidates=[f for f in fields if len(start.split())>=2 and norm(f["question"]).startswith(start+" ")]
+            if candidates:
+                end=i+1; collected=[b]
+                while end<len(blocks) and end<i+15 and not blocks[end].is_table and len(blocks[end].cells)==1:
+                    collected.append(blocks[end])
+                    combined="\n".join(x.cells[0].text for x in collected)
+                    n=norm(combined)
+                    if any(n==norm(f["question"]) or n.startswith(norm(f["question"])+" ") for f in candidates):
+                        location=dict(b.location);location["continued_locations"]=[x.location for x in collected[1:]]
+                        b=Block([Cell(combined,"\n".join(x.cells[0].active for x in collected),any(x.cells[0].corrected for x in collected))],location)
+                        i=end; break
+                    if not any(norm(f["question"]).startswith(n+" ") for f in candidates): break
+                    end+=1
+        out.append(b);i+=1
+    return out
+
 def extract(path):
     schemas=load_schemas()
     blocks,ocr_pages,warnings=read_docx(path) if path.suffix.lower()==".docx" else read_pdf(path)
@@ -243,7 +345,11 @@ def extract(path):
         result["status"]="ocr_required" if ocr_pages else "unsupported_template"
         return result
     fields=schemas[template]; pending={}; current=None; activity_mode=False; columns=None
+    boundary_fields=fields+[{"field_id":"__signoff", "question":"Name and signature (required)"}]
+    blocks=assemble_headings(clean_blocks(blocks),fields)
+    lanes={}; lane_table=None; lane_width=0; ambiguous_pending=False
     section_names={norm(f["section"]) for f in fields}
+    section_names.update({"name and signature required", "name and signature"})
     if template=="marp_anti_racism_call":
         section_names.update(norm(s) for s in json.loads((ROOT/"schemas/anti_racism_call.json").read_text())["sections"].values())
         warnings.append("template_inventory_has_unresolved_source_labels")
@@ -252,6 +358,8 @@ def extract(path):
         p=pending[fid]; p["chunks"].append(c.text);p["active"].append(c.active);p["locations"].append(location);p["corrected"]|=c.corrected
 
     for b in blocks:
+        table_key=(b.location.get("page"),b.location.get("table_on_page",b.location.get("table"))) if b.is_table else None
+        if table_key!=lane_table: lanes={};lane_table=table_key
         texts=[c.text for c in b.cells]; joined=" ".join(texts); n=norm(joined)
         # Parse activity columns by their labels, independent of order.
         if template=="marp_anti_racism_call" and len(texts)==3:
@@ -283,26 +391,64 @@ def extract(path):
         # Section boundaries stop accumulation, so boilerplate is not treated as an answer.
         partial_section=(not b.is_table and len(n.split())>=4 and any(s.startswith(n+" ") for s in section_names))
         if n in section_names or partial_section or re.fullmatch(r"[a-g] (?:recipient|event|project|events).*",n) and len(n.split())<8:
-            current=None
+            current=None;lanes={}
             if "activities" not in n: activity_mode=False
             continue
         if not b.is_table:
             if n in {"activities continued","fictional data only"} or n.startswith("synthetic test") or n.startswith("fictional test data only"):
                 continue
-        matches=[match_question(t,fields) for t in texts]
-        if any(matches):
-            activity_mode=False
-            for c,f in zip(b.cells,matches):
+        # Each label/answer segment is assigned independently. Column lanes
+        # retain side-by-side header-to-answer relationships on following rows.
+        segmented=[question_segments(c,boundary_fields) for c in b.cells]
+        has_labels=any(f for parts in segmented for f,_ in parts)
+        if has_labels: ambiguous_pending=False
+        combined_headers=(len(b.cells)==1 and len(segmented[0])>1 and
+                          all(f and not remove_prompt(c.text,f["question"]).strip() for f,c in segmented[0]))
+        header_lanes={i:parts[-1][0]["field_id"] for i,parts in enumerate(segmented)
+                      if parts and parts[-1][0] and len(parts)==1
+                      and not remove_prompt(parts[-1][1].text,parts[-1][0]["question"]).strip()}
+        if len(header_lanes)>=2:
+            lanes=header_lanes;lane_width=len(b.cells)
+        elif any(f for parts in segmented for f,_ in parts):
+            lanes={}
+        if lanes and not has_labels and len(b.cells)!=lane_width:
+            lanes={};current=None;ambiguous_pending=True
+        for ci,parts in enumerate(segmented):
+            location=dict(b.location)
+            if b.is_table:
+                location["column"]=ci+1
+                boxes=location.pop("cell_bboxes",None)
+                if boxes and ci<len(boxes) and boxes[ci]: location["bbox"]=list(boxes[ci])
+            for f,c in parts:
+                if not c.text.strip(): continue
+                # Section headings inside a cell are boundaries too.
+                if norm(c.text) in section_names:
+                    current=None;lanes={};continue
+                if f and f["field_id"]=="__signoff":
+                    current=None;lanes={}
+                    trailing=remove_prompt(c.text,f["question"])
+                    if trailing.strip():
+                        result["unmatched"].append({"text":trailing,"source_location":location,"review_reason":"ambiguous_signoff_answer"})
+                    continue
                 if f:
+                    activity_mode=False
                     current=f["field_id"]
-                    append_response(current,c,b.location);pending[current]["matches"]+=1
-                elif current and c.text: append_response(current,c,b.location)
-        elif current:
-            if any(c.text for c in b.cells):
-                append_response(current,Cell(" ".join(c.text for c in b.cells if c.text)," ".join(c.active for c in b.cells if c.active),any(c.corrected for c in b.cells)),b.location)
-        elif any(c.text for c in b.cells) and b.is_table:
-            result["unmatched"].append({"text":joined,"source_location":b.location,"review_reason":"unmatched_table_content"})
+                    append_response(current,c,location);pending[current]["matches"]+=1
+                elif ambiguous_pending:
+                    result["unmatched"].append({"text":c.text,"source_location":location,"review_reason":"ambiguous_question_boundary"})
+                elif lanes and ci in lanes:
+                    append_response(lanes[ci],c,location)
+                elif lanes:
+                    result["unmatched"].append({"text":c.text,"source_location":location,"review_reason":"ambiguous_question_boundary"})
+                elif current:
+                    append_response(current,c,location)
+                elif b.is_table:
+                    result["unmatched"].append({"text":c.text,"source_location":location,"review_reason":"unmatched_table_content"})
+        if combined_headers:
+            current=None;ambiguous_pending=True
+        if lanes: current=None
     for f in fields:
+        if f["response_type"]=="Signature": continue
         fid=f["field_id"]; p=pending.get(fid)
         if p:
             raw=remove_prompt("\n".join(p["chunks"]),f["question"])

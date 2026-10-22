@@ -2,6 +2,8 @@
 
 Run on 2026-10-22 using the committed synthetic fixtures. These are development fixtures used while implementing the extractor, not an independent held-out test or a measure of accuracy on real submissions.
 
+The table below records the initial extraction benchmark. Mixed-folder handling subsequently passed 13 unit tests, including uppercase extensions, nested folders, unsupported-only folders, corrupt/encrypted files, preserved submission IDs, duplicate-ID review and resume. Discovery now also reports fixture metadata such as JSON/Markdown as unsupported files when pointed at the whole fixtures directory; these additional report entries are not answer-extraction cases in the benchmark.
+
 | Check | Result |
 | --- | --- |
 | Input files processed | 68, no file errors |

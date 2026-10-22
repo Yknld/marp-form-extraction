@@ -91,5 +91,46 @@ class ExtractionTests(unittest.TestCase):
             self.assertEqual(w["Responses"]["F2"].data_type,"s")
             self.assertEqual(w["Files"]["B2"].data_type,"s")
 
+    def test_mixed_folder_tracks_every_format_and_submission_id(self):
+        from pypdf import PdfWriter
+        with tempfile.TemporaryDirectory() as tmp:
+            src=Path(tmp)/"forms";src.mkdir();nested=src/"batch";nested.mkdir();out=src/"results"
+            shutil.copy(ROOT/"fixtures/synthetic/docx/case_0001_ascii_x.docx",src/"001234.DOCX")
+            shutil.copy(ROOT/"fixtures/synthetic/pdf/case_0001_ascii_x.pdf",nested/"001234.PDF")
+            for name in ["old.doc","image.png","bundle.zip","notes.txt","unknown","broken.docx"]:
+                (src/name).write_bytes(b"test input")
+            writer=PdfWriter();writer.add_blank_page(width=100,height=100);writer.encrypt("secret")
+            with (src/"locked.pdf").open("wb") as f:writer.write(f)
+            for name in ["~$001234.docx",".DS_Store","draft.tmp","Thumbs.db"]:(src/name).write_bytes(b"ignored")
+            with contextlib.redirect_stdout(io.StringIO()):
+                first=run(src,out);run(src,out)
+            self.assertEqual(len(first),9)
+            by_name={r["relative_path"]:r for r in first}
+            for name in ["001234.DOCX",str(Path("batch")/"001234.PDF")]:
+                self.assertEqual(by_name[name]["status"],"extracted")
+                self.assertEqual(by_name[name]["submission_id"],"001234")
+                self.assertIn("duplicate_submission_id",by_name[name]["review_reasons"])
+            for name in ["old.doc","image.png","bundle.zip","notes.txt","unknown"]:
+                self.assertEqual(by_name[name]["status"],"unsupported_format")
+                self.assertTrue(by_name[name]["review_required"])
+            for name in ["broken.docx","locked.pdf"]:self.assertEqual(by_name[name]["status"],"error")
+            summary=json.loads((out/"summary.json").read_text())
+            self.assertEqual(summary["resumed"],9);self.assertEqual(len(summary["ignored_files"]),4)
+            w=load_workbook(out/"extracted_responses.xlsx")
+            for sheet in ["Files","Responses"]:
+                ws=w[sheet];ids=[row[-1] for row in ws.iter_rows(min_row=2) if row[1].value=="001234.DOCX"]
+                self.assertTrue(ids)
+                self.assertTrue(all(c.value=="001234" and c.data_type=="s" for c in ids))
+            (nested/"001234.PDF").unlink()
+            with contextlib.redirect_stdout(io.StringIO()):updated=run(src,out)
+            self.assertNotIn("duplicate_submission_id",next(r for r in updated if r["relative_path"]=="001234.DOCX")["review_reasons"])
+
+    def test_unsupported_only_folder_is_reported(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src=Path(tmp)/"forms";src.mkdir();(src/"001.odt").write_bytes(b"unsupported")
+            with contextlib.redirect_stdout(io.StringIO()):results=run(src,Path(tmp)/"out")
+            self.assertEqual(results[0]["submission_id"],"001")
+            self.assertEqual(results[0]["status"],"unsupported_format")
+
 
 if __name__=="__main__":unittest.main()

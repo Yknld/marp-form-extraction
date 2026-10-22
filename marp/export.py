@@ -38,6 +38,10 @@ def workbook(results, target):
         files.append(common+[r["language"],r["status"],r.get("ocr_pages",[]),len(r.get("responses",[])),len(r.get("activities",[])),r.get("duplicate_of",""),"Yes" if any_review else "No","; ".join(dict.fromkeys(reasons)),r.get("error","")])
 
     def add(name,headers,rows,widths):
+        # Append the business identifier without changing existing column positions.
+        ids={r["file_id"]:r.get("submission_id",Path(r["relative_path"]).stem) for r in results}
+        rows=[row+[ids[row[0]]] for row in rows]
+        headers=headers+["Submission ID"];widths=widths+[24]
         ws=wb.create_sheet(name);ws.sheet_view.showGridLines=False;ws.freeze_panes="D2"
         ws.append(headers)
         for row in rows:

@@ -8,7 +8,7 @@
 - Separates question responses from repeated Anti-Racism activity rows, identifies columns by labels, skips entirely empty spacer rows, and joins possible continuation rows with a review flag.
 - Interprets printed Yes/No checkbox text, distinguishes both/neither selected, and keeps numeric/date validation separate from original answers.
 - Routes image-only pages and sufficiently large image regions without text to OCR review. OCR is not run. Other readable pages may still be extracted when the form family can be identified.
-- Logs unsupported `.doc` files and failed PDFs without stopping the batch, marks byte-identical duplicates without deleting them, and saves per-file resumable checkpoints.
+- Reports every visible non-temporary input file, including unsupported formats and unreadable files, without stopping on an individual file error. Marks byte-identical duplicates without deleting them and saves per-file resumable checkpoints. See the README for discovery exclusions.
 
 ## Deliberate limitations
 
@@ -23,6 +23,8 @@ Form variants can introduce new questions or rearrange information beyond the te
 ## Outputs
 
 `Files` contains one row for every processed source, including unsupported and failed files. `Responses` contains one record for each expected field of a recognised form, including explicitly missing questions. `Activities` contains logical activity rows. `Unmatched` contains table content that was not assigned a question. File IDs are derived from relative paths; source hashes are retained in JSON.
+
+Every sheet also has a Submission ID column containing the exact filename stem as text, including leading zeros. Duplicate submission IDs are compared without case sensitivity and flagged on all affected Files rows; they are not merged. This is separate from byte-identical duplicate detection. After removing a duplicate input, rerunning clears its duplicate-ID flag on the remaining file, including when loaded from cache.
 
 Raw text, normalized values, source locations, and review reasons are retained in `results.jsonl` and checkpoints. Excel strings are written as literal text, so an answer or filename starting with `=` is not executed as a formula. XML-invalid control characters are shown as escaped character codes in Excel. Excel limits a cell to 32,767 characters: longer answers are flagged and their complete text remains in JSON. Very long rows can exceed Excel's maximum displayed row height; read the full cell or JSON rather than assuming the visible portion is complete.
 

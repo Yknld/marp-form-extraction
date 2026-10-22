@@ -25,6 +25,14 @@ Rerun the same command to resume. Completed unchanged files are loaded from chec
 
 See [scope and review guidance](docs/EXTRACTION.md) and the [synthetic benchmark](docs/BENCHMARK.md).
 
+### Mixed input folders and submission IDs
+
+Keep PDF and DOCX files together, including subfolders and uppercase extensions. The **Submission ID** column on every output sheet is the filename without its final extension, stored as text to preserve leading zeros (`001234.PDF` → `001234`). The original relative path and internal File ID remain available. Files with the same submission ID (case-insensitive) are all flagged `duplicate_submission_id`; their responses remain separate pending review.
+
+All other file types appear in the Files sheet as `unsupported_format` with a review reason: older Word/RTF/ODT documents need conversion, images need OCR, and archives need unpacking. No conversion or archive extraction happens automatically. Corrupt and password-protected files that cannot be read appear as errors; other files continue processing. A folder containing only unsupported files still produces a report.
+
+Hidden files/folders, Word lock files (`~$…`), `.tmp`/`.temp` files, `__MACOSX`, `Thumbs.db`, and `desktop.ini` are ignored and listed in `summary.json`. The selected output folder is excluded from input discovery. Keep unrelated files outside the forms folder, since other visible files are included in the report. `summary.json` also contains counts by extraction status.
+
 ## Files
 
 - **MARP_question_inventory.xlsx**: 33 questions and individual fields, organized by section with original wording, assigned field IDs, response types, conditional follow-ups, and review columns.

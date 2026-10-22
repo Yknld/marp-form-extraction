@@ -1,0 +1,233 @@
+[
+  [
+    "A01",
+    "Recipient Information",
+    "Name of your organization:",
+    "Text",
+    ""
+  ],
+  [
+    "A02",
+    "Recipient Information",
+    "First name",
+    "Text",
+    "Project contact"
+  ],
+  [
+    "A03",
+    "Recipient Information",
+    "Last name",
+    "Text",
+    "Project contact"
+  ],
+  [
+    "A04",
+    "Recipient Information",
+    "Title",
+    "Text",
+    "Project contact"
+  ],
+  [
+    "A05",
+    "Recipient Information",
+    "Telephone number",
+    "Telephone",
+    "Project contact"
+  ],
+  [
+    "A06",
+    "Recipient Information",
+    "Alternate telephone number (optional)",
+    "Telephone",
+    "Optional; project contact"
+  ],
+  [
+    "A07",
+    "Recipient Information",
+    "E-mail address",
+    "Email",
+    "Project contact"
+  ],
+  [
+    "B01",
+    "Event Information",
+    "Name of Event:",
+    "Text",
+    ""
+  ],
+  [
+    "B02",
+    "Event Information",
+    "Event start date: YYYY-MM-DD:",
+    "Date",
+    "YYYY-MM-DD"
+  ],
+  [
+    "B03",
+    "Event Information",
+    "Event end date: YYYY-MM-DD:",
+    "Date",
+    "YYYY-MM-DD"
+  ],
+  [
+    "B04",
+    "Event Information",
+    "Event location(s) (city, province):",
+    "Text",
+    ""
+  ],
+  [
+    "B05",
+    "Event Information",
+    "Project/Event Web Page and Social media pages (Facebook, Twitter etc.) (if applicable):",
+    "Text / links",
+    "If applicable"
+  ],
+  [
+    "C01",
+    "Events Activities",
+    "List and describe your completed event’s activities including dates, location, number of participants. Explain how your event activities helped achieved your event expected results.",
+    "Written response",
+    ""
+  ],
+  [
+    "C02",
+    "Events Activities",
+    "Has your event changed from what was originally planned (refer to your funding application)?",
+    "Yes / No",
+    ""
+  ],
+  [
+    "C03",
+    "Events Activities",
+    "If yes, please explain the main changes that took place and the reasons for the changes.",
+    "Written response",
+    "If C02 = Yes"
+  ],
+  [
+    "D01",
+    "Event Results",
+    "1.1 Please tell us how your event helped people gain knowledge or awareness, develop strategies and/or take action to achieve one or more of the results and address one or more of the priority themes mentioned above, if applicable. More specifically, what changed in terms of your participants’ knowledge, attitudes and/or behaviors after you delivered your activities?",
+    "Written response",
+    ""
+  ],
+  [
+    "D02",
+    "Event Results",
+    "Did your event involve multiple cultural, religious or ethnocultural communities and establish concrete opportunities for positive interaction among them? If the answer is NO, please go to question 2.2 below.",
+    "Yes / No",
+    ""
+  ],
+  [
+    "D03",
+    "Event Results",
+    "If yes, please name the communities that participated in your event activities and explain how they were involved.",
+    "Written response",
+    "If D02 = Yes"
+  ],
+  [
+    "D04",
+    "Event Results",
+    "If your event involved one single cultural, religious or ethnocultural community, please specify which community and explain how the participants were involved.",
+    "Written response",
+    "If event involved a single community"
+  ],
+  [
+    "D05",
+    "Event Results",
+    "Total number of participants for the event:",
+    "Number",
+    "Attendance requires live presence in person and/or virtually."
+  ],
+  [
+    "D06",
+    "Event Results",
+    "3.1.1 How many years/times have you delivered your event?",
+    "Number / text",
+    "Recurring events only; preserve whether years or occurrences were reported."
+  ],
+  [
+    "D07",
+    "Event Results",
+    "3.1.2 What impacts have you noticed on the community(ies) involved over time? For example, have you noticed any changes in terms of attitudes and awareness in your community?",
+    "Written response",
+    "Recurring events only; skip if non-recurring or first occurrence."
+  ],
+  [
+    "D08",
+    "Event Results",
+    "4.1 What helped make your event a success?",
+    "Written response",
+    ""
+  ],
+  [
+    "D09",
+    "Event Results",
+    "4.2 If applicable, describe any major challenges or obstacles and how you would have done something differently?",
+    "Written response",
+    "If applicable"
+  ],
+  [
+    "E01",
+    "Partnerships",
+    "Please list your key partners, if any, and any relevant support provided to the event.",
+    "Written response",
+    "If any"
+  ],
+  [
+    "F01",
+    "Publicity and Promotion",
+    "Please explain how you promoted your event (For example, by using Facebook, Instagram, Twitter, YouTube, TikTok etc.):",
+    "Written response",
+    ""
+  ],
+  [
+    "G01",
+    "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "Did you publicly acknowledge Government of Canada’s support as per the guide on the public acknowledgement of financial support ?",
+    "Yes / No",
+    ""
+  ],
+  [
+    "G02",
+    "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "If yes, please explain how and when you acknowledged the Government of Canada’s support and provide specific examples:",
+    "Written response",
+    "If G01 = Yes"
+  ],
+  [
+    "G03",
+    "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "If not, please explain why:",
+    "Written response",
+    "If G01 = No"
+  ],
+  [
+    "G04",
+    "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "English and French are the two official languages of Canada and the Government of Canada is committed to promoting both languages. If your target audience or the communities involved in your event included both English-speaking and French-speaking people, please indicate what measures you undertook to communicate with both groups and to encourage each to participate in your project.",
+    "Written response",
+    "If the audience included both English-speaking and French-speaking people."
+  ],
+  [
+    "S01",
+    "Name and signature",
+    "Authorized Signature*",
+    "Signature",
+    "Required; authorized signatory as described in the form."
+  ],
+  [
+    "S02",
+    "Name and signature",
+    "Name (please print)",
+    "Text",
+    "Name and signature (required)"
+  ],
+  [
+    "S03",
+    "Name and signature",
+    "Date (YYYY-MM-DD)",
+    "Date",
+    "YYYY-MM-DD; sign-off date"
+  ]
+]

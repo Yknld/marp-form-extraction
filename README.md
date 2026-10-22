@@ -26,14 +26,17 @@ python "C:\Tools\marp-form-extraction\extract_forms.py" --input "C:\MARP\Forms" 
 
 Open `C:\MARP\Results\extracted_responses.xlsx`:
 
-- **Files:** status and review flags for each source file.
-- **Responses:** questions, original answers, interpreted values and source locations.
-- **Activities:** one row per activity.
-- **Unmatched:** table text that could not be assigned to a question.
+The workbook has **one sheet**, with **one row per input file**:
 
-Every sheet includes **Submission ID**, taken from the filename without its extension, stored as text to preserve leading zeros. Source filenames remain attached to answers. Repeated IDs are flagged and are not merged.
+- **Submission ID** is the first column (from the filename, preserving leading zeros).
+- Each **question is a column heading**, with the extracted answer underneath.
+- Repeated activities are numbered inside three cells: description, completed, participant count.
+- **Flagged** and **Reason** identify files needing review and the affected questions.
+- Source file, processing status and unmatched text appear at the end.
 
-Start with **Flagged** and **Reason** in Files. No means no automated issue was detected, not that someone verified the answer. Compare a small pilot batch against the originals before processing all submissions.
+The first column and header row stay visible when scrolling. Filters let you show only flagged files. Headers and answers wrap; expand row heights or use the formula bar to read long text. Matching question labels from different form versions are qualified so their answers stay separate. Questions from other form versions remain blank. Duplicate IDs remain separate rows and are flagged.
+
+No in Flagged means no automated issue was detected, not that someone verified the answer. Compare a pilot batch against the originals before processing all submissions.
 
 The only generated result is **extracted_responses.xlsx**. There are no hash columns, JSON outputs or checkpoint files. Every run processes all inputs again and replaces the workbook: save manual review edits in a separate copy. Existing JSON/checkpoint files from older versions are not used or deleted. Duplicate filenames (submission IDs) are still flagged; identical content under different IDs is no longer detected.
 
@@ -56,9 +59,9 @@ Development fixtures, generators, tests and inventory workbooks were removed fro
 
 Supports the supplied English MARP Events Component and Anti-Racism Call forms in DOCX and selectable-text PDF. Runs locally without Office, Acrobat or a network connection after installation. Source files are read only.
 
-Scans need OCR, which this script does not perform. Other formats appear in Files with a review reason: older Word/RTF/ODT files need conversion, images need OCR, and archives need unpacking. Unreadable/password-protected files are reported without stopping other files. Hidden/temporary files and Word lock files are listed as skipped in the Files sheet. The selected output folder is excluded.
+Scans need OCR, which this script does not perform. Other formats appear in the sheet with a review reason: older Word/RTF/ODT files need conversion, images need OCR, and archives need unpacking. Unreadable/password-protected files are reported without stopping other files. Hidden/temporary files and Word lock files are listed as skipped rows. The selected output folder is excluded.
 
-French and unknown templates, ambiguous choices and unsupported visual content require review. PDF drawing marks, crossed-out choices and interactive checkbox values are not reliably interpreted. Word images/text boxes may require manual review. Review flags cannot detect every mistake. Very long answers are split into numbered parts on a Long text sheet to preserve the full text within Excel. Rows may be taller than Excel can display; inspect the cell contents when necessary.
+French and unknown templates, ambiguous choices and unsupported visual content require review. PDF drawing marks, crossed-out choices and interactive checkbox values are not reliably interpreted. Word images/text boxes may require manual review. Review flags cannot detect every mistake. Very long answers continue in additional columns on the same sheet, preserving the full text and one row per file. Rows may be taller than Excel can display; inspect the cell contents when necessary.
 
 The Excel-only output has been checked for mixed formats, leading-zero IDs, duplicate-ID flags, long-text preservation and formula safety. The earlier synthetic benchmark matched 1,829 of 1,832 ordinary answers and all 70 activity rows; three unresolved selections were flagged. These development results do not establish accuracy on real submissions or throughput for 1,000+ files.
 

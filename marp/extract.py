@@ -84,6 +84,31 @@ def read_docx(path):
 
 
 def read_pdf(path):
+    """Summarize repeated font-metadata warnings as one file review reason."""
+    import logging
+
+    class FontWarningFilter(logging.Filter):
+        seen = False
+
+        def filter(self, record):
+            if record.getMessage().startswith("Could not get FontBBox from font descriptor because"):
+                self.seen = True
+                return False
+            return True
+
+    logger = logging.getLogger("pdfminer.pdffont")
+    capture = FontWarningFilter()
+    logger.addFilter(capture)
+    try:
+        blocks, pages, warnings = _read_pdf(path)
+    finally:
+        logger.removeFilter(capture)
+    if capture.seen:
+        warnings.append("PDF font metadata missing or invalid; check extracted text against the original")
+    return blocks, pages, warnings
+
+
+def _read_pdf(path):
     import pdfplumber
     blocks=[]; ocr_pages=[]; warnings=[]
     with pdfplumber.open(path) as pdf:

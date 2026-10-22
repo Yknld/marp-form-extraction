@@ -66,3 +66,9 @@ French and unknown templates, ambiguous choices and unsupported visual content r
 The Excel-only output has been checked for mixed formats, leading-zero IDs, duplicate-ID flags, long-text preservation and formula safety. The earlier synthetic benchmark matched 1,829 of 1,832 ordinary answers and all 70 activity rows; three unresolved selections were flagged. These development results do not establish accuracy on real submissions or throughput for 1,000+ files.
 
 Keep real forms and extracted responses in your approved work environment, outside this public repository.
+
+### PDF font warnings and unrecognized forms
+
+Missing or invalid PDF font measurements (`FontBBox`) do not necessarily stop extraction. Repeated instances of this warning are summarized once in that file's Excel Reason column and set Flagged to Yes. Compare its extracted text against the original; this change does not repair the PDF. Other PDF diagnostics remain visible.
+
+`Unsupported template` is separate: the text did not match a supported form version. The file keeps its row and submission ID, with a review reason, but its question cells are not filled. Consult Reason to distinguish an unknown template from a recognized unsupported French or legacy version.

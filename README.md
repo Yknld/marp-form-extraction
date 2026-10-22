@@ -21,6 +21,12 @@ The repository contains question definitions and fictional test forms. Real comp
 
 Run `python scripts/validate_fixtures.py` to validate the checked-in suite. The generator supports a 1,052-file throughput batch; see the coverage guide for prerequisites and commands. Large batches repeat scenario families and do not establish real-world accuracy.
 
+### Anti-Racism Call form family
+
+The [Anti-Racism Call guide](fixtures/ANTI_RACISM_CALL.md) describes a separate inventory and 16 additional synthetic files focused on activity tables spanning pages. See `MARP_anti_racism_question_inventory.xlsx` for 32 ordinary fields, three activity fields, and source review issues, or `schemas/anti_racism_call.json` for the machine-readable definitions.
+
+The combined corpora contain **68 synthetic files**. Run `python scripts/validate_anti_racism_fixtures.py` to check the second corpus, including split activity rows and blank spacers. Both inventories retain review flags. The original uploaded PDF is not included.
+
 ## Review flags
 
 The workbook includes **Review required** (Not assessed / Yes / No) and **Review reason**. All fields start as Not assessed. These are placeholders in the question inventory; the future extractor will create separate review flags for each response in each submitted form.

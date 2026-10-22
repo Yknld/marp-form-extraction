@@ -1,0 +1,381 @@
+{
+  "template_id": "marp_anti_racism_call",
+  "title": "MARP Final Activity Report – Anti-Racism Call",
+  "schema_version": 1,
+  "source": {
+    "label": "User-supplied 13-page Anti-Racism Call PDF",
+    "note": "Question labels only. Original file and respondent information are not included. Page references refer to that source, not the synthetic files."
+  },
+  "sections": {
+    "A": "A. Recipient Information",
+    "B": "B. Project Information",
+    "C": "C. Project Activities",
+    "D": "D. Project Results",
+    "E": "E. Partnerships",
+    "F": "F. Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "S": "Name and signature"
+  },
+  "questions": [
+    {
+      "field_id": "ARC-A01",
+      "section": "A",
+      "question": "Name of your organization:",
+      "response_type": "Text",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A02",
+      "section": "A",
+      "question": "First name",
+      "response_type": "Text",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A03",
+      "section": "A",
+      "question": "Last name",
+      "response_type": "Text",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A04",
+      "section": "A",
+      "question": "Title",
+      "response_type": "Text",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A05",
+      "section": "A",
+      "question": "Telephone number",
+      "response_type": "Telephone",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A06",
+      "section": "A",
+      "question": "Alternate telephone number (optional)",
+      "response_type": "Telephone",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-A07",
+      "section": "A",
+      "question": "E-mail address",
+      "response_type": "Email",
+      "source_page": 2,
+      "condition": "Contact person",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B01",
+      "section": "B",
+      "question": "Project Title:",
+      "response_type": "Text",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B02",
+      "section": "B",
+      "question": "Project start date YYYY-MM-DD:",
+      "response_type": "Date",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B03",
+      "section": "B",
+      "question": "Project end date YYYY-MM-DD:",
+      "response_type": "Date",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B04",
+      "section": "B",
+      "question": "Final project cost: $",
+      "response_type": "Currency",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B05",
+      "section": "B",
+      "question": "MARP Contribution Amount: $",
+      "response_type": "Currency",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-B06",
+      "section": "B",
+      "question": "Project Website or Social Media Feeds (if applicable):",
+      "response_type": "Text / links",
+      "source_page": 2,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-C01",
+      "section": "C",
+      "question": "Have your project activities changed from what was originally planned (refer to your application form)?",
+      "response_type": "Yes / No",
+      "source_page": 4,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-C02",
+      "section": "C",
+      "question": "Did your activities take place in various locations?",
+      "response_type": "Yes / No",
+      "source_page": 4,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-C03",
+      "section": "C",
+      "question": "If yes, please list the locations (city/province/territory or online), and if changes occurred to the initial locations indicated in your application form, please explain the reasons for the changes.",
+      "response_type": "Written response",
+      "source_page": 4,
+      "condition": "If ARC-C02 = Yes",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D01",
+      "section": "D",
+      "question": "1. How did your project help in alleviating systemic racism and discrimination in workplaces within arts, culture, and",
+      "response_type": "Written response",
+      "source_page": 5,
+      "condition": "",
+      "wording_status": "incomplete_in_source"
+    },
+    {
+      "field_id": "ARC-D02",
+      "section": "D",
+      "question": "2. How did your project contribute to enhancing access to and inclusivity within arts, culture, and heritage organizations and",
+      "response_type": "Written response",
+      "source_page": 6,
+      "condition": "",
+      "wording_status": "incomplete_in_source"
+    },
+    {
+      "field_id": "ARC-D03",
+      "section": "D",
+      "question": "3. How did your project help in increasing representation and inclusion in decision-making processes and governance?",
+      "response_type": "Written response",
+      "source_page": 6,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D04",
+      "section": "D",
+      "question": "4. How did your project contribute to increasing support and opportunities for equity-deserving communities to take",
+      "response_type": "Written response",
+      "source_page": 7,
+      "condition": "",
+      "wording_status": "incomplete_in_source"
+    },
+    {
+      "field_id": "ARC-D05",
+      "section": "D",
+      "question": "5. Please explain how you measured the results of the project, including the indicators and methods used.",
+      "response_type": "Written response",
+      "source_page": 8,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D06",
+      "section": "D",
+      "question": "6. Which community or communities (Indigenous Peoples, Black, racialized and religious minority communities) will benefit from your project? Please identify the communities and explain how they will benefit from the project.",
+      "response_type": "Written response",
+      "source_page": 9,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D08a",
+      "section": "D",
+      "question": "Number of resources and data products to increase knowledge of the impact of racism and discrimination:",
+      "response_type": "Number",
+      "source_page": 9,
+      "condition": "Question 8; if applicable",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D08b",
+      "section": "D",
+      "question": "Number of resources and data products to address racism:",
+      "response_type": "Number",
+      "source_page": 9,
+      "condition": "Question 8; if applicable",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D08c",
+      "section": "D",
+      "question": "If available, please provide the number of participants who indicated that the resources and data products provided are useful for addressing racism.",
+      "response_type": "Number",
+      "source_page": 9,
+      "condition": "Question 8; if available",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D09",
+      "section": "D",
+      "question": "9. In light of your project, would you have any recommendations to share with the Multiculturalism and Anti-Racism Program regarding the types of activities most likely to foster exchanges and mutual understanding, for example, encouraging projects with smaller numbers of participants; or having more information available on certain populations that are victims of discrimination/racism?",
+      "response_type": "Yes / No",
+      "source_page": 10,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-D09a",
+      "section": "D",
+      "question": "If yes, which ones?",
+      "response_type": "Written response",
+      "source_page": 10,
+      "condition": "If ARC-D09 = Yes",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-E01",
+      "section": "E",
+      "question": "List your partners for this project and describe their roles and contributions; explain how their collaboration was needed for the success of the project. Please indicate if new partnerships were developed as a result of the project.",
+      "response_type": "Written response",
+      "source_page": 12,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-F01",
+      "section": "F",
+      "question": "Did you publicly acknowledge the Government of Canada’s support?",
+      "response_type": "Yes / No",
+      "source_page": 13,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-S01",
+      "section": "S",
+      "question": "Authorized Signature*",
+      "response_type": "Signature",
+      "source_page": 13,
+      "condition": "Required; same person or authorization as application signatory",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-S02",
+      "section": "S",
+      "question": "Name (please print)",
+      "response_type": "Text",
+      "source_page": 13,
+      "condition": "",
+      "wording_status": "as_visible"
+    },
+    {
+      "field_id": "ARC-S03",
+      "section": "S",
+      "question": "Date (YYYY-MM-DD)",
+      "response_type": "Date",
+      "source_page": 13,
+      "condition": "",
+      "wording_status": "as_visible"
+    }
+  ],
+  "activity_fields": [
+    {
+      "field_id": "ARC-ACT-DESCRIPTION",
+      "question": "Activity — List and describe your project’s activities.",
+      "response_type": "Written response",
+      "source_page": 2
+    },
+    {
+      "field_id": "ARC-ACT-COMPLETED",
+      "question": "Completed",
+      "response_type": "Yes / No",
+      "source_page": 2
+    },
+    {
+      "field_id": "ARC-ACT-PARTICIPANTS",
+      "question": "Number of participants per activity (if applicable)",
+      "response_type": "Number / text",
+      "source_page": 2
+    }
+  ],
+  "source_issues": [
+    {
+      "code": "source_question_incomplete",
+      "fields": [
+        "ARC-D01",
+        "ARC-D02",
+        "ARC-D04"
+      ],
+      "detail": "Visible question wording ends mid-sentence. Preserve visible wording; do not infer the missing text."
+    },
+    {
+      "code": "source_question_number_gap",
+      "source_page": 9,
+      "detail": "Visible numbering jumps from 6 to 8. No question 7 label is available; do not invent one or renumber later questions."
+    },
+    {
+      "code": "source_unlabelled_response_boxes",
+      "source_pages": [
+        9,
+        11,
+        13
+      ],
+      "detail": "Some boxes have no visible prompt. Preserve unmatched content separately if present; do not automatically assign it to a known question."
+    }
+  ],
+  "table_contracts": {
+    "responses": [
+      "file_id",
+      "template_id",
+      "field_id",
+      "answer_text",
+      "normalized_answer",
+      "source_page",
+      "source_location",
+      "review_required",
+      "review_reason"
+    ],
+    "activities": [
+      "file_id",
+      "template_id",
+      "activity_index",
+      "description",
+      "completed_raw",
+      "completed",
+      "participant_count_raw",
+      "participant_count",
+      "source_pages",
+      "source_locations",
+      "review_required",
+      "review_reason"
+    ],
+    "notes": "One Responses record per question per file. One Activities record per logical activity, potentially spanning several physical rows or pages. Empty spacers do not create activities. Use (template_id, field_id) as the question key. Page references are unavailable for native DOCX until pagination; retain table/row locations."
+  }
+}

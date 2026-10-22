@@ -1,5 +1,7 @@
 # Synthetic test forms
 
+This page describes the Events Component corpus. A separate [Anti-Racism Call corpus](ANTI_RACISM_CALL.md) adds 16 files with multi-page activity tables and its own question inventory.
+
 All names, organisations, contact details, signatures, and answers in these files are fictional. Email addresses and websites use the reserved example.invalid domain. None of the submitted sample's respondent answers are included.
 
 The starter suite contains **52 files**: 20 Word documents, their 20 LibreOffice-converted PDFs, six scan variants, and six focused PDF selection probes. The first 46 files are full forms. The six probes contain only the three Yes/No fields.

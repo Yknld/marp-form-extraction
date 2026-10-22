@@ -2,6 +2,40 @@
 
 **Run `extract_forms.py`.** Keep the downloaded folder together: the script needs the supporting code and question definitions beside it.
 
+**To find different questionnaire versions first, run `discover_versions.py` instead.** This is a separate inventory tool; it does not extract answers into the report or change the existing extraction workflow.
+
+## Discover questionnaire versions
+
+From inside the downloaded code folder, with Forms beside it:
+
+```powershell
+python discover_versions.py --input "..\Forms" --output "..\VersionReview"
+```
+
+Open **VersionReview → questionnaire_versions.xlsx**. The single sheet lists every file, its submission ID, candidate version group, and **Representative file to open**. Filter **Use this file as representative?** to **Yes** to find one suggested example per group. Files with insufficient evidence remain ungrouped and need manual inspection.
+
+Open the representative files locally, make copies, and remove responses from those copies before sharing templates. The script does not redact or copy originals. Its report contains filenames and IDs, which may themselves be sensitive, but no extracted answer text or question snippets.
+
+Discovery uses known question labels plus question-like wording from unfamiliar forms; it does not require the form to pass the existing template detector. It ignores font differences and uses a conservative similarity threshold. Grouping is provisional: missing questions or OCR errors may split one version into several groups, and very small revisions can still be grouped together. Similarity is a question-cue comparison, not an accuracy/confidence score. Candidate group numbers can change when the input set changes.
+
+The report is saved every 25 inspected files and at completion. Ctrl+C saves the files completed so far. Keep the workbook closed while running. Each rerun starts over and replaces the report; these are progress snapshots, not resumable checkpoints. No JSON files are generated.
+
+### Scans in version discovery
+
+Discovery can use **local Tesseract OCR** when installed. It looks on PATH and in the usual Windows Tesseract installation folders. No cloud service or download is used by the script. Python dependencies alone do not install Tesseract or its language data. Install these through your approved work-machine process if needed.
+
+If Tesseract is elsewhere, specify its executable:
+
+```powershell
+python discover_versions.py --input "..\Forms" --output "..\VersionReview" --tesseract "C:\Program Files\Tesseract-OCR\tesseract.exe"
+```
+
+The default OCR language is English. If English and French language data are installed, add `--ocr-language eng+fra`. To disable OCR, add `--ocr off`. Scanned PDFs and common image files are rendered/read locally; temporary images are removed afterward. OCR runs on PDFs with unread pages or too few question cues. Without OCR, unreadable scans appear as **Needs OCR**, not as invented questionnaire versions.
+
+Old `.doc`, archives and other unsupported formats are listed for conversion/manual review. Image-only Word documents need manual conversion to PDF for OCR. Corrupt or encrypted files are reported without stopping the batch. Discovery OCR is for grouping only; it does not yet add scan answer extraction to `extract_forms.py`.
+
+Optional tuning: `--similarity 0.96` is the default; a higher value separates more groups. At least eight question cues are required for grouping. Review representatives rather than treating candidate groups as confirmed templates.
+
 ## 1. Install once
 
 Use Python 3.10 or newer in your approved work environment. In PowerShell, replace this example location with your downloaded folder:
@@ -48,6 +82,7 @@ The bundled JSON question definitions are internal settings, not output files; k
 | File or folder | Purpose |
 | --- | --- |
 | `extract_forms.py` | The script you run |
+| `discover_versions.py` | Find candidate questionnaire versions before preparing blank templates |
 | `requirements.txt` | Dependencies to install once |
 | `marp/` | Required supporting code |
 | `questions.json` | Required Events question definitions |

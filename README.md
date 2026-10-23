@@ -93,7 +93,7 @@ Development fixtures, generators, tests and inventory workbooks were removed fro
 
 ## Limits
 
-Supports the supplied English MARP Events Component and Anti-Racism Call forms in DOCX and selectable-text PDF. Runs locally without Office, Acrobat or a network connection after installation. Source files are read only.
+Supports the supplied English MARP Events Component, Anti-Racism Call, and Organizational Capacity Building forms in DOCX and selectable-text PDF. Runs locally without Office, Acrobat or a network connection after installation. Source files are read only.
 
 Scans need OCR, which this script does not perform. Other formats appear in the sheet with a review reason: older Word/RTF/ODT files need conversion, images need OCR, and archives need unpacking. Unreadable/password-protected files are reported without stopping other files. Hidden/temporary files and Word lock files are listed as skipped rows. The selected output folder is excluded.
 
@@ -116,3 +116,11 @@ Authorized Signature is excluded from the output and does not generate missing-s
 Known printed bilingual-material and authorized-signatory notes are removed, including wrapped versions. Respondent notes and quoted question labels are preserved. The cleaner uses specific wording; it does not discard every line starting with Note. Other unrecognized instructions may still require review.
 
 Multiple question labels in a cell and side-by-side table headings are handled separately. Where the following answers cannot be assigned confidently, their text is kept under Unmatched text and flagged instead of being guessed. The Excel-only command and output path are unchanged.
+
+### Organizational Capacity Building version
+
+The Organizational Capacity Building component is detected separately. Its 38 non-signature fields include project costs, activity-change/location follow-ups, five result ratings with separate explanations, and printed signatory name/date. Activity cells include description, completion, results achieved, and participant count.
+
+Rating selections are mapped to their column labels (large/some/little/no extent or N/A). Multiple selections, unreadable marks, and unselected ratings are flagged. Empty activity rows with unselected boxes are ignored; checked rows without descriptions remain flagged. The default financial-report request and other printed instructions are not exported as answers.
+
+Validation covers a fictional Word form and a bordered-table PDF conversion, including narrow/wrapped rating columns and page continuations. Borderless PDFs and materially changed layouts can still need review; OCR answer extraction remains outside the extraction script. Only template wording is published, not the supplied document or its remaining selections.

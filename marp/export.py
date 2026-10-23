@@ -27,7 +27,7 @@ def workbook(results, target):
         families = list(schemas)
     fields = [(family, q) for family in families for q in schemas[family] if q["response_type"] != "Signature"]
     counts = Counter(q["question"].casefold() for _, q in fields)
-    labels = {"marp_events": "Events", "marp_anti_racism_call": "Anti-Racism"}
+    labels = {"marp_events": "Events", "marp_anti_racism_call": "Anti-Racism", "marp_organizational_capacity": "Capacity Building"}
     columns = []
     for family, q in fields:
         label = q["question"]
@@ -38,6 +38,8 @@ def workbook(results, target):
     activity_columns = [("description", "Activities — description"),
                         ("completed_raw", "Activities — completed?"),
                         ("participant_count_raw", "Activities — participant count")]
+    if any(r["template_id"]=="marp_organizational_capacity" for r in results):
+        activity_columns.insert(2,("results_achieved","Activities — results achieved"))
     has_activities = any(r.get("activities") for r in results)
     headers = ["Submission ID", "Flagged"] + [label for _, label in columns]
     if has_activities:

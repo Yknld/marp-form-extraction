@@ -1,0 +1,270 @@
+{
+  "template_id": "marp_organizational_capacity",
+  "title": "MARP Final Activity Report – Organizational Capacity Building component",
+  "source": {
+    "note": "Question labels and printed instructions only. No respondent values or original document are included."
+  },
+  "sections": {
+    "A": "A. Recipient Information",
+    "B": "B. Project Information",
+    "C": "C. Project Activities",
+    "D": "D. Project Results",
+    "E": "E. Partnerships",
+    "F": "F. Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+    "G": "G. Financial Documents"
+  },
+  "questions": [
+    {
+      "field_id": "OCB-A01",
+      "section": "A",
+      "question": "Name of your organization:",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A02",
+      "section": "A",
+      "question": "First name",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A03",
+      "section": "A",
+      "question": "Last name",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A04",
+      "section": "A",
+      "question": "Title",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A05",
+      "section": "A",
+      "question": "Telephone number",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A06",
+      "section": "A",
+      "question": "Alternate telephone number (optional)",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-A07",
+      "section": "A",
+      "question": "E-mail address:",
+      "response_type": "Email"
+    },
+    {
+      "field_id": "OCB-B01",
+      "section": "B",
+      "question": "Project Title:",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-B02",
+      "section": "B",
+      "question": "Project start date YYYY-MM-DD:",
+      "response_type": "Date"
+    },
+    {
+      "field_id": "OCB-B03",
+      "section": "B",
+      "question": "Project end date YYYY-MM-DD:",
+      "response_type": "Date"
+    },
+    {
+      "field_id": "OCB-B04",
+      "section": "B",
+      "question": "Final project cost: $",
+      "response_type": "Currency"
+    },
+    {
+      "field_id": "OCB-B05",
+      "section": "B",
+      "question": "MARP Contribution Amount: $",
+      "response_type": "Currency"
+    },
+    {
+      "field_id": "OCB-B06",
+      "section": "B",
+      "question": "Project Website or Social Media Feeds (if applicable):",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-C01",
+      "section": "C",
+      "question": "Have your project activities changed from what was originally planned (refer to annex A of the contribution agreement)?",
+      "response_type": "Yes / No"
+    },
+    {
+      "field_id": "OCB-C02",
+      "section": "C",
+      "question": "If yes, please explain the main changes that took place and the reasons for the changes. Also explain if the changes impacted the expected results of the project.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-C03",
+      "section": "C",
+      "question": "Did your activities take place in various locations?",
+      "response_type": "Yes / No"
+    },
+    {
+      "field_id": "OCB-C04",
+      "section": "C",
+      "question": "If yes, please list the locations (city/province/territory or online), and if changes occurred to the initial locations indicated in your application form, please explain the reasons for the changes.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D01",
+      "section": "D",
+      "question": "Improve your financial management?",
+      "response_type": "Rating"
+    },
+    {
+      "field_id": "OCB-D02",
+      "section": "D",
+      "question": "If applicable, please explain how your project activities helped improve your financial management and provide concrete examples of what has been developed/measures undertaken.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D03",
+      "section": "D",
+      "question": "Stronger human resource capacity (both staff and volunteers)?",
+      "response_type": "Rating"
+    },
+    {
+      "field_id": "OCB-D04",
+      "section": "D",
+      "question": "If applicable, please explain how your project activities helped strengthen your human resource capacity (both staff and volunteers) and provide concrete examples of what has been developed/measures undertaken.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D05",
+      "section": "D",
+      "question": "Enhance governing practices?",
+      "response_type": "Rating"
+    },
+    {
+      "field_id": "OCB-D06",
+      "section": "D",
+      "question": "If applicable, please explain how your project activities helped enhance your governing practices and provide concrete examples of what has been developed/measures undertaken.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D07",
+      "section": "D",
+      "question": "Increase partnership and networking abilities?",
+      "response_type": "Rating"
+    },
+    {
+      "field_id": "OCB-D08",
+      "section": "D",
+      "question": "If applicable, please explain how your project activities helped increase your partnership and networking abilities and provide concrete examples of what has been developed/measures undertaken.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D09",
+      "section": "D",
+      "question": "Creation or improvement of strategic plans?",
+      "response_type": "Rating"
+    },
+    {
+      "field_id": "OCB-D10",
+      "section": "D",
+      "question": "If applicable, please explain how your project activities helped in creating or improving strategic plans abilities and provide concrete examples of what has been developed/measures undertaken.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D11",
+      "section": "D",
+      "question": "Please explain how you measured and will report on the results of the project? Including the indicators and methods used.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D12",
+      "section": "D",
+      "question": "How will the results of your project enhance your organization’s ability to advance anti-racism and promote intercultural and interfaith understanding, to provide equitable opportunities, to promote dialogue on multiculturalism and anti-racism, and to build understanding of disparities? In your response, please reflect on your organization’s capacity prior to the start of your project and following its completion.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D13",
+      "section": "D",
+      "question": "Which community or communities (Indigenous Peoples, Black, racialized and religious minority communities) will benefit from your project? Please identify the communities and explain how they will benefit from the project",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-D14",
+      "section": "D",
+      "question": "Please describe what made your project a success, as well as any challenges or obstacles you faced in the completion of your project. In addition, please describe what you would have done differently, if applicable.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-E01",
+      "section": "E",
+      "question": "List your partners for this project and describe their roles and contributions; explain how their collaboration was needed for the success of the project. Please indicate if new partnerships were developed as a result of the project.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-F01",
+      "section": "F",
+      "question": "Did you publicly acknowledge Government of Canada’s support?",
+      "response_type": "Yes / No"
+    },
+    {
+      "field_id": "OCB-F02",
+      "section": "F",
+      "question": "If yes, please explain how and when you acknowledged the Government of Canada’s support and provide specific examples:",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-F03",
+      "section": "F",
+      "question": "If not, please explain:",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-F04",
+      "section": "F",
+      "question": "English and French are the two official languages of Canada and the Government of Canada is committed to promoting both languages. Referring to the official languages requirements in Annex A of your contribution agreement, please describe the measures that have been put in place to meet the official languages requirements for your project.",
+      "response_type": "Written response"
+    },
+    {
+      "field_id": "OCB-S01",
+      "section": "S",
+      "question": "Authorized Signature*",
+      "response_type": "Signature"
+    },
+    {
+      "field_id": "OCB-S02",
+      "section": "S",
+      "question": "Name (please print)",
+      "response_type": "Text"
+    },
+    {
+      "field_id": "OCB-S03",
+      "section": "S",
+      "question": "Date (YYYY-MM-DD)",
+      "response_type": "Date"
+    }
+  ],
+  "rating_options": [
+    "To a large extent",
+    "To some extent",
+    "To a little extent",
+    "To no extent",
+    "N/A"
+  ],
+  "rating_heading": "To what extent did your project achieve the following results?",
+  "printed_instructions": [
+    "Multiculturalisme and Anti-Racism program (MARP)",
+    "Final Activity Report – Organizational Capacity Building component",
+    "This final report is an important step in completing your project funded by the Department of Canadian Heritage. In addition to sharing your achievements and challenges with us, and engaging in a useful self-assessment exercise, it will also fulfill your obligation to the Department. We will use the information to:\n\nevaluate the outcomes of the funded projects, \nmonitor the effectiveness and impact of the program, and\nrelease the final payment or ‘holdback’ portion to Contribution recipients.\n\nCompleting the final report is a condition in your Contribution Agreement for receiving the final payment; the final payment will only be released upon receipt and approval of your final report. You must submit a final report (along with any other required documentation) within 90 days of completing your project, including final financial reports or any other documents specified in your contribution agreement (unless otherwise indicated within your Contribution Agreement). \n\n\n\nGuidelines for the Completion of your Final Report:\n\nRe-read your Contribution Agreement before you prepare your final report.  Your responses should reflect the extent to which you exceeded, met, or fell short of the objectives originally articulated in your Contribution Agreement. \nPlease complete all sections of this document. Where precise numbers are not available please estimate to the best of your ability. Where a response is not applicable, mark “N/A”. \nWe encourage you to discuss your challenges as well as your successes.  Lessons learned are also valuable.\nOnce you have completed your report, please submit a signed copy of your report by email to your program advisor or to financementpmlcr-fundingmarp@pch.gc.ca  \n\nIf you have any questions regarding the completion of this report and the additional documents required, please contact the program advisor responsible for your file.",
+    "Contact Person:",
+    "The Organizational Capacity Building component of the Multiculturalism and Anti-Racism Program provides funding for capacity building projects that will contribute to the recipient's ability to advance anti-racism and promote intercultural and interfaith understanding, to provide equitable opportunities, to promote dialogue on multiculturalism and anti-racism, and to build understanding of disparities. \nThis component specifically targets projects that build or strengthen an organization’s capacity to operate, and will help achieve one or more of the following expected results:\nimproved financial management;\nstronger human resource capacity (both staff and volunteer);\nenhanced governing practices;\nincreased partnerships and networking abilities; and\ncreation or improvement of strategic plans.\nIn this section, please develop your responses by referring to the expected results and performance indicators outlined in your contribution agreement’s Annex A, clause 3.",
+    "SUCCESSES AND LESSONS LEARNED (Please note that this information will not be used to assess your project, but is used to improve the future delivery of this funding program).",
+    "Please provide a detailed final financial report of the project signed by an authorized person that includes all revenues and expenses, as stated in clause 7 of Annex B of your contribution agreement.",
+    "*Note: The authorized signatory must be the same person, or hold the same authorization to sign official documents, as the person who signed the application form and the contribution agreement."
+  ]
+}

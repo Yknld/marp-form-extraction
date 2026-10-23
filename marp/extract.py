@@ -35,9 +35,9 @@ class Block:
 
 def load_schemas():
     events = [{"field_id": r[0], "section": r[1], "question": r[2],
-               "response_type": r[3], "condition": r[4]} for r in json.loads((ROOT / "questions.json").read_text())]
-    arc = json.loads((ROOT / "schemas/anti_racism_call.json").read_text())["questions"]
-    ocb = json.loads((ROOT / "schemas/organizational_capacity.json").read_text())["questions"]
+               "response_type": r[3], "condition": r[4]} for r in json.loads((ROOT / "questions.json").read_text(encoding="utf-8"))]
+    arc = json.loads((ROOT / "schemas/anti_racism_call.json").read_text(encoding="utf-8"))["questions"]
+    ocb = json.loads((ROOT / "schemas/organizational_capacity.json").read_text(encoding="utf-8"))["questions"]
     return {"marp_events": events, "marp_anti_racism_call": arc, "marp_organizational_capacity": ocb}
 
 
@@ -384,7 +384,7 @@ def extract(path):
         return result
     fields=schemas[template]; pending={}; current=None; activity_mode=False; columns=None
     boundary_fields=fields+[{"field_id":"__signoff", "question":"Name and signature (required)"}]
-    ocb_schema=json.loads((ROOT/"schemas/organizational_capacity.json").read_text()) if template=="marp_organizational_capacity" else None
+    ocb_schema=json.loads((ROOT/"schemas/organizational_capacity.json").read_text(encoding="utf-8")) if template=="marp_organizational_capacity" else None
     if ocb_schema: blocks=prepare_ocb_blocks(blocks,fields)
     blocks=assemble_headings(clean_blocks(blocks,ocb_schema["printed_instructions"] if ocb_schema else ()),fields)
     rating_values={};rating_options=ocb_schema["rating_options"] if ocb_schema else []
@@ -392,7 +392,7 @@ def extract(path):
     section_names={norm(f["section"]) for f in fields}
     section_names.update({"name and signature required", "name and signature"})
     if template=="marp_anti_racism_call":
-        section_names.update(norm(s) for s in json.loads((ROOT/"schemas/anti_racism_call.json").read_text())["sections"].values())
+        section_names.update(norm(s) for s in json.loads((ROOT/"schemas/anti_racism_call.json").read_text(encoding="utf-8"))["sections"].values())
         warnings.append("template_inventory_has_unresolved_source_labels")
     if ocb_schema: section_names.update(norm(value) for value in ocb_schema["sections"].values())
     def append_response(fid,c,location):

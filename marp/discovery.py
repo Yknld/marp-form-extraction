@@ -73,6 +73,36 @@ def find_tesseract(explicit=None):
     return None
 
 
+
+class OCRFailure(RuntimeError):
+    """Only predefined, content-free diagnostic messages belong here."""
+
+
+def failure_reason(exc, stage):
+    if isinstance(exc, OCRFailure): return str(exc)
+    if isinstance(exc, subprocess.TimeoutExpired): return "OCR timed out on a page; try a smaller or clearer PDF"
+    if isinstance(exc, (ImportError, ModuleNotFoundError)):
+        return "A required Python package could not load; run: python -m pip install -r requirements.txt"
+    if isinstance(exc, PermissionError): return "Access denied; check file permissions and local availability"
+    if isinstance(exc, FileNotFoundError): return "File or required program not found; ensure the source is downloaded locally"
+    if type(exc).__name__ in {"PDFPasswordIncorrect", "FileNotDecryptedError", "WrongPasswordError"}:
+        return "Password-protected PDF; provide an unlocked copy in your approved environment"
+    if type(exc).__name__ in {"BadZipFile", "PackageNotFoundError"}:
+        return "Word document could not be opened; download it locally and confirm it opens in Word"
+    return f"{stage} failed ({type(exc).__name__}); check the original opens locally and share this error type for diagnosis"
+
+
+def check_ocr(executable, language):
+    try:
+        proc = subprocess.run([executable, "--list-langs"], capture_output=True, timeout=15)
+        if proc.returncode: return "Tesseract could not start or read its language data; check the OCR installation"
+        installed = set(proc.stdout.decode("utf-8", "replace").splitlines())
+        if not set(language.split("+")) <= installed:
+            return "Requested OCR language data is missing; install it or select an installed language with --ocr-language"
+    except Exception as exc:
+        return failure_reason(exc, "OCR startup")
+    return ""
+
 def ocr_texts(path, executable, language):
     """Render originals into temporary images; OCR TSV provides ordered lines."""
     import pypdfium2 as pdfium
@@ -101,7 +131,12 @@ def ocr_texts(path, executable, language):
                 proc = subprocess.run([executable, str(image_path), "stdout", "-l", language,
                                        "--psm", "3", "tsv"], capture_output=True, timeout=120)
                 if proc.returncode:
-                    raise RuntimeError("OCR failed; check Tesseract language data and installation")
+                    message=proc.stderr.decode("utf-8", "replace").casefold()
+                    if "traineddata" in message or "failed loading language" in message:
+                        raise OCRFailure("OCR language data could not load; check Tesseract language installation")
+                    if "read_params_file" in message and "tsv" in message:
+                        raise OCRFailure("Tesseract TSV configuration is missing; repair the OCR installation")
+                    raise OCRFailure(f"Tesseract OCR failed (exit code {proc.returncode}); check its installation and source image")
                 lines = {}
                 for word in csv.DictReader(io.StringIO(proc.stdout.decode("utf-8", "replace")), delimiter="\t"):
                     if word.get("level") == "5" and word.get("text", "").strip():
@@ -114,13 +149,14 @@ def ocr_texts(path, executable, language):
     return texts
 
 
-def inspect_file(path, base, executable, language, ocr_enabled):
+def inspect_file(path, base, executable, language, ocr_enabled, ocr_issue=""):
     record = dict(submission_id=path.stem, source=str(path.relative_to(base)),
                   status="Ready", method="", reason="", cues=frozenset(), review=False)
     suffix = path.suffix.lower()
     if suffix not in {".pdf", ".docx"} | IMAGES:
         record.update(status="Unsupported format", reason="Convert this file to PDF or DOCX for discovery", review=True)
         return record
+    stage="Reading document"
     try:
         scanned = []
         if suffix in IMAGES:
@@ -129,12 +165,21 @@ def inspect_file(path, base, executable, language, ocr_enabled):
             blocks, scanned, warnings = read_docx(path) if suffix == ".docx" else read_pdf(path)
             texts = [c.text for b in blocks for c in b.cells]
             record["method"] = "Word text" if suffix == ".docx" else "PDF text"
+        stage="Identifying question cues"
         cues = question_cues(texts)
+        record["cues"] = cues
         needs_ocr = bool(scanned) or len(cues) < MIN_CUES
         if needs_ocr and suffix != ".docx":
+            if ocr_issue:
+                record.update(status="OCR unavailable", reason=ocr_issue, review=True)
+                return record
             if executable and ocr_enabled:
                 # Keep usable native cues too, but mark the grouping as OCR-dependent.
-                cues |= question_cues(ocr_texts(path, executable, language))
+                try:
+                    cues |= question_cues(ocr_texts(path, executable, language))
+                except Exception as exc:
+                    record.update(status="OCR failed", reason=failure_reason(exc,"OCR reading")+"; native question cues retained, version left unassigned", review=True)
+                    return record
                 record["method"] = "Local OCR" if not texts else "PDF text + local OCR"
                 record["review"] = True
                 record["reason"] = "OCR-assisted grouping; compare questions in the original"
@@ -150,7 +195,7 @@ def inspect_file(path, base, executable, language, ocr_enabled):
                           reason="Open manually; too few recognizable questions to assign a version")
     except Exception as exc:
         # Do not export parser messages: they can contain source text.
-        record.update(status="Read failed", reason=f"Could not inspect file ({type(exc).__name__}); check readability or OCR setup", review=True)
+        record.update(status="Read failed", reason=failure_reason(exc,stage), review=True)
     return record
 
 
@@ -245,16 +290,18 @@ def run(input_path, output, threshold=.96, ocr="auto", tesseract=None, language=
     output.mkdir(parents=True,exist_ok=True);target=output/"questionnaire_versions.xlsx"
     executable=find_tesseract(tesseract) if ocr!="off" else None
     if tesseract and not executable:raise ValueError("Tesseract executable not found at the specified path")
-    print("Local OCR available" if executable else "Local OCR unavailable/off: unreadable scans will be marked Needs OCR",flush=True)
+    ocr_issue=check_ocr(executable,language) if executable else ""
+    print("Local OCR available" if executable and not ocr_issue else "Local OCR unavailable/off: "+(ocr_issue or "unreadable scans will be marked Needs OCR"),flush=True)
     records=[];interrupted=False
     try:
         for index,path in enumerate(paths,1):
             print(f"[{index}/{len(paths)}] Inspecting {path.relative_to(base)}",flush=True)
             if ignored_input(path,base):
                 r=dict(submission_id=path.stem,source=str(path.relative_to(base)),status="Skipped",method="",reason="Temporary or hidden file",cues=frozenset(),review=False)
-            else:r=inspect_file(path,base,executable,language,ocr!="off")
+            else:r=inspect_file(path,base,executable,language,ocr!="off",ocr_issue)
             records.append(r)
             print(f"  {r['status']}; {len(r['cues'])} question cues",flush=True)
+            if r["status"] not in {"Ready","Skipped"}: print("  Reason: "+r["reason"],flush=True)
             if index%25==0:
                 save_report(records,target,threshold)
                 print(f"  Progress saved: {index} files",flush=True)

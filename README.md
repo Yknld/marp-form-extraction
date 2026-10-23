@@ -36,6 +36,8 @@ Old `.doc`, archives and other unsupported formats are listed for conversion/man
 
 Optional tuning: `--similarity 0.96` is the default; a higher value separates more groups. At least eight question cues are required for grouping. Review representatives rather than treating candidate groups as confirmed templates.
 
+Discovery prints a **Reason** for failed/unresolved files as well as writing it to Excel. `Read failed` means document reading or question analysis failed; `OCR failed` means the OCR attempt failed; `OCR unavailable` means the startup check found an OCR installation/language issue. Any native question cues already found are retained when OCR fails, but incomplete files remain ungrouped. Zero cues after a failure does not prove that the form contains no questions. Check the Reason before changing templates. Files stored in OneDrive must be available locally to the Python process.
+
 ## 1. Install once
 
 Use Python 3.10 or newer in your approved work environment. In PowerShell, replace this example location with your downloaded folder:

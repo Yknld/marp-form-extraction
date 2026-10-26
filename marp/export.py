@@ -1,4 +1,4 @@
-"""One worksheet: one source file per row, one question per column."""
+"""Worksheets by questionnaire version, with one source file per row."""
 from pathlib import Path
 from collections import Counter
 from openpyxl import Workbook
@@ -20,11 +20,42 @@ def readable(reason):
     return reason.replace("_", " ")
 
 
+SHEET_FAMILIES = {
+    "English Type 1": "marp_events",
+    "English Type 2": "marp_events_legacy",
+    "French Type 1": "marp_events_fr",
+    "French Type 2": None,  # Recognizable, but no verified extraction schema yet.
+}
+
+
+def sheet_for(result):
+    for sheet, family in SHEET_FAMILIES.items():
+        if family and result.get("template_id") == family:
+            return sheet
+    if "unsupported_french_legacy_template" in result.get("review_reasons", []):
+        return "French Type 2"
+    return "Miscellaneous"
+
+
 def workbook(results, target):
     schemas = load_schemas()
-    families = [name for name in schemas if any(r["template_id"] == name for r in results)]
-    if not families:
-        families = list(schemas)
+    groups = {name: [] for name in [*SHEET_FAMILIES, "Miscellaneous"]}
+    for result in results:
+        groups[sheet_for(result)].append(result)
+    wb = Workbook()
+    wb.remove(wb.active)
+    for name, group in groups.items():
+        family = SHEET_FAMILIES.get(name)
+        families = [family] if family else [
+            key for key in schemas if any(r.get("template_id") == key for r in group)]
+        write_sheet(wb.create_sheet(name), group, schemas, families)
+    target = Path(target)
+    tmp = target.with_suffix(".tmp.xlsx")
+    wb.save(tmp)
+    tmp.replace(target)
+
+
+def write_sheet(ws, results, schemas, families):
     fields = [(family, q) for family in families for q in schemas[family] if q["response_type"] != "Signature"]
     counts = Counter(q["question"].casefold() for _, q in fields)
     labels = {"marp_events": "Events", "marp_events_legacy": "Events older version", "marp_events_fr": "Événements français", "marp_anti_racism_call": "Anti-Racism", "marp_organizational_capacity": "Capacity Building"}
@@ -75,7 +106,7 @@ def workbook(results, target):
                 "\n\n".join(a["text"] for a in result.get("unmatched", []))]
         rows.append([text(v) for v in row])
     # Excel cells hold at most 32,767 characters. Continue across columns,
-    # keeping exactly one sheet and one row per file, without losing text.
+    # keeping one row per file, without losing text.
     expanded_headers = []
     expanded_rows = [[] for _ in rows]
     for col, header in enumerate(headers):
@@ -84,9 +115,6 @@ def workbook(results, target):
             expanded_headers.append(header if part == 0 else f"{header} (continued {part + 1})")
             for source, dest in zip(rows, expanded_rows):
                 dest.append(source[col][part * 30000:(part + 1) * 30000])
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Responses"
     ws.sheet_view.showGridLines = False
     ws.freeze_panes = "C2"
     ws.append(expanded_headers)
@@ -119,7 +147,3 @@ def workbook(results, target):
         validation.add(f"{flag}2:{flag}{ws.max_row}")
         ws.conditional_formatting.add(f"{flag}2:{flag}{ws.max_row}", FormulaRule(
             formula=[f'{flag}2="Yes"'], fill=PatternFill("solid", fgColor="FFF0C2")))
-    target = Path(target)
-    tmp = target.with_suffix(".tmp.xlsx")
-    wb.save(tmp)
-    tmp.replace(target)

@@ -32,15 +32,18 @@ If a package is missing, check which Python environment is selected with IT. Do 
 
 Open **Results → extracted_responses.xlsx**. Keep the workbook closed while running.
 
-- One sheet, one row per source file.
+- Five sheets: **English Type 1** (Events), **English Type 2** (older Events), **French Type 1** (Events), **French Type 2** (older Events), and **Miscellaneous**.
+- One row per source file, placed on exactly one sheet. Each survey sheet has only its own question columns; empty types still have a tab.
+- French Type 2 is recognized but not yet supported for extraction: its rows remain flagged, with readable text in Unmatched text.
+- Miscellaneous holds unknown forms, OCR skips, errors, unsupported files, and other recognized families (Anti-Racism and Capacity Building). Any extracted answers from those families are preserved there.
 - **Submission ID** first, **Flagged** second.
-- Each question is a column; separate questionnaire versions have distinct columns where needed.
+- Each question is a column. ID and flag stay visible while scrolling.
 - Recognized Yes/No selections display plain **Yes** or **No**. Ambiguous choices retain their original text and a review reason.
 - Names and email addresses are separate fields. Authorized Signature is excluded; printed signatory name and date remain.
 - Activities retain their correspondence through numbered entries within cells.
 - Reason, Source file, Status, and Unmatched text appear at the end.
 
-The workbook is saved after **every completed file**, and again at completion. Ctrl+C leaves the last completed save available. Each run starts over and replaces the workbook; this is not resumable processing. Save manual corrections in a separate copy. Duplicate IDs remain separate flagged rows.
+The workbook is saved after **every completed file**, and again at completion. Ctrl+C leaves the last completed save available. Rows accumulate on the matching sheets during a run. Each run starts over and replaces the workbook; this is not resumable processing. Save manual corrections in a separate copy. Duplicate IDs remain separate flagged rows.
 
 No hashes, JSON result files, or separate diagnostic dumps are created. The JSON files in the code folder are internal question definitions. Very long answers continue in additional columns to avoid Excel's cell-length limit. Values are written as text, preserving IDs and preventing answers from becoming formulas.
 

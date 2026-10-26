@@ -115,6 +115,48 @@ class PipelineTests(unittest.TestCase):
             self.assertNotIn('Do not expose source text',str(list(ws.values)))
             self.assertFalse(any('Authorized Signature' in str(x.value) for x in ws[1]))
 
+    def test_five_sheets_route_every_file_and_preserve_answers(self):
+        from marp.export import workbook
+        samples = [
+            ('marp_events', [], 'English Type 1'),
+            ('marp_events_legacy', [], 'English Type 2'),
+            ('marp_events_fr', [], 'French Type 1'),
+            ('unknown', ['unsupported_french_legacy_template'], 'French Type 2'),
+            ('unknown', ['ocr_required'], 'Miscellaneous'),
+            ('marp_anti_racism_call', [], 'Miscellaneous'),
+            ('marp_organizational_capacity', [], 'Miscellaneous'),
+        ]
+        schemas=load_schemas();results=[]
+        for i,(family,reasons,sheet) in enumerate(samples):
+            responses=[]
+            if family in schemas:
+                responses=[dict(field_id=schemas[family][0]['field_id'],
+                                answer_text=f'Fictional answer {i}',review_reasons=[])]
+            results.append(dict(template_id=family,submission_id=f'00{i}',
+                relative_path=f'00{i}.pdf',status='extracted' if responses else 'unsupported_template',
+                responses=responses,review_reasons=reasons,review_required=bool(reasons),
+                unmatched=[dict(text='Retained text',review_reason='unmapped')] if not responses else []))
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'answers.xlsx';workbook(results,p)
+            wb=load_workbook(p)
+            self.assertEqual(wb.sheetnames,['English Type 1','English Type 2',
+                             'French Type 1','French Type 2','Miscellaneous'])
+            self.assertEqual(sum(ws.max_row-1 for ws in wb),len(results))
+            for i,(_,_,sheet) in enumerate(samples):
+                ws=wb[sheet]
+                record=next(r for r in ws.iter_rows(min_row=2,values_only=True) if r[0]==f'00{i}')
+                if results[i]['responses']:self.assertIn(f'Fictional answer {i}',record)
+                else:
+                    self.assertEqual(record[1],'Yes')
+                    self.assertIn('Retained text',record)
+            self.assertEqual(wb['English Type 1'].max_column,
+                6+sum(q['response_type']!='Signature' for q in schemas['marp_events']))
+            for ws in wb:
+                self.assertEqual(ws.cell(1,2).value,'Flagged')
+                self.assertEqual(ws.freeze_panes,'C2')
+            workbook([],p)
+            self.assertEqual(len(load_workbook(p).sheetnames),5)
+
     def test_completed_rows_saved_before_interruption(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td);src=base/'forms';src.mkdir()

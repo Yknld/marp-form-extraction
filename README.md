@@ -104,3 +104,17 @@ Run the tests with `python -m unittest discover -s tests -v`. Development valida
 ## Validation of this release
 
 On the Mac, using the existing dependency stack: 12 regression tests passed; 1,921 of 1,924 ordinary-answer comparisons matched across the existing synthetic corpus, fictional capacity-building forms, and new script-derived template probes. The three mismatches were existing crossed-out PDF selections, retained as unresolved and flagged. All 70 reference activity rows matched. Six scan variants, including a mixed text/scan PDF, were skipped with no answers. A mixed nine-file batch retained corrupt and unsupported files as review rows. The new-template probes use generated labels, so they test parser mechanics rather than independently confirming the reconstructed wording. Windows runtime validation and a local pilot on actual forms are still needed.
+
+## Sort files only
+
+For simple format sorting without extracting answers, run the standalone `sort_forms.py`:
+
+```powershell
+python sort_forms.py --input "..\Forms" --output "..\SortedForms"
+```
+
+It copies files into **Word documents**, **Text PDFs**, **Needs OCR**, and **Other or unreadable files**. Originals remain unchanged. Relative subfolders and filenames are preserved to avoid collisions. Input and output must be separate folders, neither inside the other. It uses the existing `pdfplumber` package, with no Acrobat, OCR, downloads, or new packages.
+
+Every PDF page is checked. A detected scan in a mixed PDF sends the whole PDF to Needs OCR. This is a heuristic: existing poor OCR, sparse text, or decorative images may need manual review. Blank PDFs also go to Needs OCR for inspection. Word/document files are grouped by extension, not checked for embedded scans. Images go to Needs OCR; corrupt or encrypted PDFs that cannot be read go to Other or unreadable files. Hidden/temporary files are skipped.
+
+`sorting_report.csv` records each decision and copy failure. Existing destination files are never overwritten; reruns skip existing copies and replace the report. Use a fresh output folder if source files have changed. This script does not populate response spreadsheets.

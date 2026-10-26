@@ -3,7 +3,7 @@ import argparse
 from collections import Counter
 from pathlib import Path
 from .extract import extract
-from .export import workbook
+from .export import workbook, sheet_for, SHEET_FAMILIES
 
 
 def ignored_input(path, base):
@@ -22,6 +22,7 @@ def run(input_path, output, reader=None):
     input_path=Path(input_path).resolve();output=Path(output).resolve()
     if not input_path.exists(): raise ValueError("Input path does not exist")
     if input_path==output or output in input_path.parents: raise ValueError("Output must not equal or contain the input directory")
+    print(f"MARP extractor — five-sheet layout. Code: {Path(__file__).resolve().parent.parent}", flush=True)
     output.mkdir(parents=True,exist_ok=True)
     base=input_path.parent if input_path.is_file() else input_path
     candidates=[input_path] if input_path.is_file() else sorted(p for p in input_path.rglob("*") if p.is_file() and output not in p.parents)
@@ -53,6 +54,8 @@ def run(input_path, output, reader=None):
     target=output/"extracted_responses.xlsx"
     workbook(results,target)
     print(f"Saved {target}. Processed {len(paths)} files; skipped {len(ignored)} temporary/hidden files.",flush=True)
+    counts = Counter(sheet_for(r) for r in results)
+    print("Workbook tabs: " + "; ".join(f"{name}: {counts[name]} files" for name in [*SHEET_FAMILIES, "Miscellaneous"]), flush=True)
     return results
 
 

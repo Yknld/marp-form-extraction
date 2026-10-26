@@ -1,0 +1,20 @@
+{
+  "aliases": {
+    "C02": [
+      "Has your event changed from what was originally planned (refer to your Contribution Agreement)?"
+    ],
+    "D05": [
+      "2.3 Total number of direct participants:",
+      "Total number of direct participants:"
+    ],
+    "D02": [
+      "2.1 Did your event involve multiple cultural, religious or ethnocultural communities and establish concrete opportunities for positive interaction among them? If the answer is NO, please go to question 2.2 below."
+    ]
+  },
+  "printed_instructions": [
+    "Note: This refers to participants who attended your event. Attendance requires live presence either in person and/or virtually (if online activities took place).",
+    "Note: This refers to participants who attended your event. Attendance requires live presence either in person and/or virtually (if online activities take place).",
+    "Note: This refers to the number of attendees, number of individuals who accessed tools and resources, social media views related to the event, downloads etc.",
+    "Note: If applicable, you may submit copies of promotional material you have developed for this event along with your final report."
+  ]
+}

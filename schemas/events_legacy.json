@@ -1,0 +1,363 @@
+{
+  "template_id": "marp_events_legacy",
+  "source": {
+    "note": "Question wording recovered from user-provided VBA extractors and cleaners. Reconstructed labels require confirmation against blank templates. No respondent data or original macros included."
+  },
+  "questions": [
+    {
+      "field_id": "OLD-A01",
+      "section": "Recipient Information",
+      "question": "Name of your organization:",
+      "response_type": "Text",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-A02",
+      "section": "Recipient Information",
+      "question": "First name",
+      "response_type": "Text",
+      "condition": "Project contact"
+    },
+    {
+      "field_id": "OLD-A03",
+      "section": "Recipient Information",
+      "question": "Last name",
+      "response_type": "Text",
+      "condition": "Project contact"
+    },
+    {
+      "field_id": "OLD-A04",
+      "section": "Recipient Information",
+      "question": "Title",
+      "response_type": "Text",
+      "condition": "Project contact"
+    },
+    {
+      "field_id": "OLD-A05",
+      "section": "Recipient Information",
+      "question": "Telephone number",
+      "response_type": "Telephone",
+      "condition": "Project contact"
+    },
+    {
+      "field_id": "OLD-A06",
+      "section": "Recipient Information",
+      "question": "Alternate telephone number (optional)",
+      "response_type": "Telephone",
+      "condition": "Optional; project contact"
+    },
+    {
+      "field_id": "OLD-A07",
+      "section": "Recipient Information",
+      "question": "E-mail address",
+      "response_type": "Email",
+      "condition": "Project contact"
+    },
+    {
+      "field_id": "OLD-B01",
+      "section": "Event Information",
+      "question": "Name of Event:",
+      "response_type": "Text",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-B02",
+      "question": "Event date",
+      "response_type": "Date",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-B04",
+      "section": "Event Information",
+      "question": "Event location(s) (city, province):",
+      "response_type": "Text",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-B05",
+      "section": "Event Information",
+      "question": "Project/Event Web Page and Social media pages (Facebook, Twitter etc.) (if applicable):",
+      "response_type": "Text / links",
+      "condition": "If applicable"
+    },
+    {
+      "field_id": "OLD-C01",
+      "question": "List your event activities",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D01",
+      "question": "Increase awareness of Canada's growing diversity",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "OLD-D01E",
+      "question": "Increase awareness of Canada's growing diversity — Explain how:",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "contextual_prompt": "Explain how:",
+      "after_field": "OLD-D01"
+    },
+    {
+      "field_id": "OLD-D02",
+      "question": "Increase awareness of issues affecting full participation in society and the economy, related to culture, ethnicity or religion",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "OLD-D02E",
+      "question": "Increase awareness of issues affecting full participation in society and the economy, related to culture, ethnicity or religion — Explain how:",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "contextual_prompt": "Explain how:",
+      "after_field": "OLD-D02"
+    },
+    {
+      "field_id": "OLD-D03",
+      "question": "Increase awareness of democratic institutions, systems, and legal frameworks, including the Canadian Charter of Rights and Freedoms",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "OLD-D03E",
+      "question": "Increase awareness of democratic institutions, systems, and legal frameworks, including the Canadian Charter of Rights and Freedoms — Explain how:",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "contextual_prompt": "Explain how:",
+      "after_field": "OLD-D03"
+    },
+    {
+      "field_id": "OLD-D04",
+      "question": "Increase capacity within communities to address racism and discrimination",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "OLD-D04E",
+      "question": "Increase capacity within communities to address racism and discrimination — Explain how:",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "contextual_prompt": "Explain how:",
+      "after_field": "OLD-D04"
+    },
+    {
+      "field_id": "OLD-D05",
+      "question": "Did your event involve multiple cultural, religious or ethnocultural communities and establish concrete opportunities for positive interaction among them?",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D05E",
+      "question": "If yes, please name the communities that participated in your event activities and explain how they were involved.",
+      "response_type": "Written response",
+      "aliases": [
+        "If yes, please name the targeted communities that participated in your event activities and explain how they were involved.",
+        "If yes, please name the communities participating in your event activities and explain how they were involved."
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D06",
+      "question": "Did your event focus on Indigenous Peoples and/or racialized women and girls?",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D06E",
+      "question": "If yes, explain how they were involved in your event activities and provide the number of participants that identify as one of those two priority groups.",
+      "response_type": "Written response",
+      "aliases": [
+        "If yes, explain how they were involved in your event activities and provide the number of participants who identify as one of those two priority groups."
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D07",
+      "question": "Expected total number of participants",
+      "response_type": "Number",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D08",
+      "question": "Actual total number of participants",
+      "response_type": "Number",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "OLD-D09",
+      "section": "Event Results",
+      "question": "3.1.1 How many years/times have you delivered your event?",
+      "response_type": "Number / text",
+      "condition": "Recurring events only; preserve whether years or occurrences were reported."
+    },
+    {
+      "field_id": "OLD-D10",
+      "question": "Has your event led to any changes over time?",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D11",
+      "question": "What impacts have you noticed on the community(ies) involved?",
+      "response_type": "Written response",
+      "aliases": [
+        "What impacts have you noticed on the communities involved?"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D12",
+      "section": "Event Results",
+      "question": "4.1 What helped make your event a success?",
+      "response_type": "Written response",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D13",
+      "question": "Please describe any major challenges or obstacles that you faced in the completion of your project.",
+      "response_type": "Written response",
+      "aliases": [
+        "Please describe any major challenges or obstacles you faced in completing your project.",
+        "Please describe any significant challenges or obstacles that you faced in the completion of your project."
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-D14",
+      "question": "If you could have done something differently in organizing the event, what would it have been?",
+      "response_type": "Written response",
+      "aliases": [
+        "If you could have done something different in organizing the event, what would it have been?"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-E01",
+      "question": "List your partners for this event and describe their roles. Please indicate if new partnerships were developed as a result of the event.",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-F01",
+      "question": "Please describe any outreach you conducted and explain how you promoted your project (For example, by using Facebook, Flickr, Instagram, Twitter, YouTube, etc.):",
+      "response_type": "Written response",
+      "aliases": [
+        "Please describe any outreach you conducted and explain how you promoted your project (For example, by using, Facebook, Flickr, Instagram, Twitter, YouTube, etc.):"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-G01",
+      "question": "Did you publicly acknowledge Government of Canada’s support?",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-G02",
+      "section": "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+      "question": "If yes, please explain how and when you acknowledged the Government of Canada’s support and provide specific examples:",
+      "response_type": "Written response",
+      "condition": "If G01 = Yes"
+    },
+    {
+      "field_id": "OLD-G03",
+      "question": "If not, explain:",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "OLD-G04",
+      "section": "Acknowledgement of Government of Canada’s Support and Official Languages Requirements",
+      "question": "English and French are the two official languages of Canada and the Government of Canada is committed to promoting both languages. If your target audience or the communities involved in your event included both English-speaking and French-speaking people, please indicate what measures you undertook to communicate with both groups and to encourage each to participate in your project.",
+      "response_type": "Written response",
+      "condition": "If the audience included both English-speaking and French-speaking people."
+    },
+    {
+      "field_id": "OLD-S01",
+      "section": "Name and signature",
+      "question": "Authorized Signature*",
+      "response_type": "Signature",
+      "condition": "Required; authorized signatory as described in the form."
+    },
+    {
+      "field_id": "OLD-S02",
+      "section": "Name and signature",
+      "question": "Name (please print)",
+      "response_type": "Text",
+      "condition": "Name and signature (required)"
+    },
+    {
+      "field_id": "OLD-S03",
+      "section": "Name and signature",
+      "question": "Date (YYYY-MM-DD)",
+      "response_type": "Date",
+      "condition": "YYYY-MM-DD; sign-off date"
+    }
+  ],
+  "printed_instructions": [
+    "Note: If applicable, you may submit copies of promotional material you have developed for this event along with your final report.",
+    "(If your event is non-recurring or you are reporting on its first occurrence, please proceed to #4 below)"
+  ],
+  "sections": [
+    "A. Recipient Information",
+    "B. Event Information",
+    "C. Event Activities",
+    "D. Event Results",
+    "E. Partnerships",
+    "F. Publicity and Promotion",
+    "G. Acknowledgement",
+    "1. RESULTS",
+    "2. PARTICIPATING COMMUNITIES",
+    "3. LONG-TERM RESULTS",
+    "4. SUCCESSES AND CHALLENGES"
+  ]
+}

@@ -27,7 +27,8 @@ def workbook(results, target):
         families = list(schemas)
     fields = [(family, q) for family in families for q in schemas[family] if q["response_type"] != "Signature"]
     counts = Counter(q["question"].casefold() for _, q in fields)
-    labels = {"marp_events": "Events", "marp_anti_racism_call": "Anti-Racism", "marp_organizational_capacity": "Capacity Building"}
+    labels = {"marp_events": "Events", "marp_events_legacy": "Events older version", "marp_events_fr": "Événements français", "marp_anti_racism_call": "Anti-Racism", "marp_organizational_capacity": "Capacity Building"}
+    question_types={(family,q["field_id"]):q["response_type"] for family,q in fields}
     columns = []
     for family, q in fields:
         label = q["question"]
@@ -52,7 +53,10 @@ def workbook(results, target):
         row = [text(result["submission_id"]), "No"]
         for (family, fid), label in columns:
             a = answers.get(fid) if result["template_id"] == family else None
-            row.append(text(a["answer_text"]) if a else "")
+            value=a["answer_text"] if a else ""
+            if a and question_types[(family,fid)]=="Yes / No" and a.get("normalized_answer") in {"Yes","No"}:
+                value=a["normalized_answer"]
+            row.append(text(value))
             if a:
                 reasons.extend(f"{label}: {readable(x)}" for x in a.get("review_reasons", []))
         if has_activities:

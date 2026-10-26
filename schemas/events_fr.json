@@ -1,0 +1,310 @@
+{
+  "template_id": "marp_events_fr",
+  "source": {
+    "note": "Question wording recovered from user-provided VBA extractors and cleaners. Reconstructed labels require confirmation against blank templates. No respondent data or original macros included."
+  },
+  "questions": [
+    {
+      "field_id": "FR-A01",
+      "question": "Nom de votre organisme",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A02",
+      "question": "Prénom",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A03",
+      "question": "Nom de famille",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A04",
+      "question": "Titre",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A05",
+      "question": "Numéro de téléphone",
+      "response_type": "Telephone",
+      "aliases": [
+        "Téléphone"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A06",
+      "question": "Autre numéro de téléphone (facultatif)",
+      "response_type": "Telephone",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-A07",
+      "question": "Adresse courriel",
+      "response_type": "Email",
+      "aliases": [
+        "Adresse électronique",
+        "Courriel",
+        "Adresse de courriel"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-B01",
+      "question": "Titre de l’événement",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-B02",
+      "question": "Date de début de l’événement",
+      "response_type": "Date",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-B03",
+      "question": "Date de fin de l’événement",
+      "response_type": "Date",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-B04",
+      "question": "Lieu(x) de l’événement (ville, province)",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-B05",
+      "question": "Site Web du projet/de l’événement et comptes de médias sociaux",
+      "response_type": "Text / links",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "FR-C01",
+      "question": "Veuillez dresser la liste des activités complétées y compris les dates, le lieu où s’est déroulée l’activité, le nombre de participants. Décrivez comment les activités de l’événement ont permis d’atteindre les résultats attendus de votre événement",
+      "response_type": "Written response",
+      "aliases": [
+        "Veuillez dresser la liste des activités complétées y compris les dates, le lieu où s’est déroulée l’activité, le nombre de participants. Décrivez comment les activités de l’événement ont permis d’atteindre les résultats escomptés de votre événement."
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-C02",
+      "question": "Votre événement a-t-il changé par rapport à ce qui était initialement prévu",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-C03",
+      "question": "Dans l’affirmative, veuillez expliquer les principaux changements qui ont eu lieu et les raisons de ces derniers.",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D01",
+      "question": "1.1 Veuillez nous dire comment votre projet a aidé les gens à acquérir des connaissances ou à sensibiliser, à élaborer des stratégies et/ ou à prendre des mesures pour atteindre un ou plusieurs des résultats et aborder un ou plusieurs des thèmes prioritaires mentionnés ci- dessus. Plus précisément, qu’est- ce qui a changé en termes de connaissances, d’attitudes et/ ou de comportements de vos participants après la réalisation de vos activités ?",
+      "response_type": "Written response",
+      "aliases": [
+        "1.1 Veuillez nous dire comment votre projet a aidé les gens à acquérir des connaissances ou à sensibiliser, à élaborer des stratégies et/ ou à prendre des mesures pour atteindre un ou plusieurs des résultats et aborder un ou plusieurs des thèmes prioritaires mentionnés ci- dessus, le cas échéant. Plus précisément, qu’est- ce qui a changé en termes de connaissances, d’attitudes et/ ou de comportements de vos participants après la réalisation de vos activités ?"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D02",
+      "question": "2.1 Votre événement a- t- il fait participer plusieurs communautés culturelles, religieuses ou ethnoculturelles et créé des opportunités concrètes d’interaction positive entre elles? Si la réponse est NON, veuillez passer à la question 2.2 ci- dessous.",
+      "response_type": "Yes / No",
+      "aliases": [
+        "1. Votre événement a- t- il fait participer plusieurs communautés culturelles, religieuses ou ethnoculturelles et créé des opportunités concrètes d’interaction positive entre elles? Si la réponse est NON, veuillez passer à la question 2.2 ci- dessous."
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D03",
+      "question": "Si oui, veuillez nommer les communautés qui ont participé aux activités de votre événement et expliquer comment elles ont été impliquées.",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D04",
+      "question": "2.2 Si votre événement a fait participer une seule communauté culturelle, religieuse ou ethnoculturelle, veuillez préciser quelle communauté et expliquer comment les participants ont été impliqués.",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D05",
+      "question": "2.3 Le nombre total de participants directs",
+      "response_type": "Number",
+      "aliases": [
+        "2.3 Le nombre total de participants à l’événement"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D05R",
+      "question": "2.4 Portée totale de votre événement",
+      "response_type": "Number",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "FR-D06",
+      "question": "Depuis combien d’années organisez- vous votre événement? Combien de fois a- t- il eu lieu?",
+      "response_type": "Number / text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D07",
+      "question": "Quels impacts avez- vous remarqués sur la ou les communautés concernée ( s) au fil du temps? Par exemple, avez- vous remarqué des changements en termes d’attitudes et de sensibilisation dans votre communauté?",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D08",
+      "question": "4.1 Qu'est-ce qui a contribué à la réussite de votre événement?",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-D09",
+      "question": "4.2 Le cas échéant, décrivez les principaux défis ou obstacles et comment vous auriez pu procéder différemment?",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": "",
+      "wording_status": "reconstructed_from_script"
+    },
+    {
+      "field_id": "FR-E01",
+      "question": "Dressez la liste de vos partenaires clés, le cas échéant, et tout soutien pertinent apporté à l’événement.",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-F01",
+      "question": "Veuillez décrire la façon dont vous avez fait la promotion de votre événement ( par exemple, en utilisant Facebook, Instagram, Twitter, YouTube, TikTok etc.):",
+      "response_type": "Written response",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-G01",
+      "question": "Avez-vous reconnu publiquement l’appui du gouvernement du Canada selon le guide sur la reconnaissance publique de l’appui financier?",
+      "response_type": "Yes / No",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-G02",
+      "question": "Dans l’affirmative, veuillez expliquer quand et de quelle façon vous avez reconnu l’appui du gouvernement du Canada et fournir des exemples précis :",
+      "response_type": "Written response",
+      "aliases": [
+        "Dans l’affirmative, veuillez expliquer quand et de quelle façon vous avez reconnu l’appui du gouvernement du Canada et veuillez fournir des exemples précis :"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-G03",
+      "question": "Dans la négative, veuillez expliquer pourquoi:",
+      "response_type": "Written response",
+      "aliases": [
+        "Sinon, veuillez expliquer pourquoi:"
+      ],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-S01",
+      "question": "Signature autorisée",
+      "response_type": "Signature",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-S02",
+      "question": "Nom (en lettres moulées)",
+      "response_type": "Text",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    },
+    {
+      "field_id": "FR-S03",
+      "question": "Date (AAAA-MM-JJ)",
+      "response_type": "Date",
+      "aliases": [],
+      "section": "Event Results",
+      "condition": ""
+    }
+  ],
+  "printed_instructions": [
+    "Note: Il s’agit du nombre de participants, du nombre de personnes qui ont accédé aux outils et aux ressources, du nombre de vue sur les médias sociaux lié à l’événement, des téléchargements, etc.",
+    "Note: Il s’agit des participants qui ont assisté à votre événement. La participation requiert une présence en personne et/ ou virtuelle ( si des activités en ligne ont eu lieu).",
+    "Note: Il s’agit des participants qui assisteront à votre événement. La participation implique une présence en personne et/ ou virtuelle ( si des activités ont lieu en ligne).",
+    "(référez-vous à votre demande de financement)?"
+  ],
+  "sections": [
+    "A. Renseignements sur le bénéficiaire",
+    "B. Renseignements sur l’événement",
+    "C. Activités de l’événement",
+    "D. Résultats de l’événement",
+    "E. Partenariats",
+    "F. Publicité et Promotion",
+    "G. Reconnaissance de l’appui",
+    "2. PARTICIPANTS / COMMUNAUTÉS",
+    "3. RÉSULTATS À LONG TERME"
+  ]
+}

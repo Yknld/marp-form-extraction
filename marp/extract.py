@@ -36,9 +36,15 @@ class Block:
 def load_schemas():
     events = [{"field_id": r[0], "section": r[1], "question": r[2],
                "response_type": r[3], "condition": r[4]} for r in json.loads((ROOT / "questions.json").read_text(encoding="utf-8"))]
+    event_variants=json.loads((ROOT/"schemas/events_variants.json").read_text(encoding="utf-8"))
+    for f in events: f["aliases"]=event_variants["aliases"].get(f["field_id"],[])
+    events.append({"field_id":"D05R","section":"Event Results","question":"2.4 Total reach of your event:","response_type":"Number","condition":"Optional; only present in some versions","optional_variant":True})
     arc = json.loads((ROOT / "schemas/anti_racism_call.json").read_text(encoding="utf-8"))["questions"]
     ocb = json.loads((ROOT / "schemas/organizational_capacity.json").read_text(encoding="utf-8"))["questions"]
-    return {"marp_events": events, "marp_anti_racism_call": arc, "marp_organizational_capacity": ocb}
+    schemas={"marp_events": events, "marp_anti_racism_call": arc, "marp_organizational_capacity": ocb}
+    for name in ("events_legacy", "events_fr"):
+        schemas["marp_"+name]=json.loads((ROOT / "schemas" / (name+".json")).read_text(encoding="utf-8"))["questions"]
+    return schemas
 
 
 def read_docx(path):
@@ -117,7 +123,7 @@ def _read_pdf(path):
         for number,page in enumerate(pdf.pages,1):
             text=page.extract_text() or ""
             image_area=sum(max(0,im["x1"]-im["x0"])*max(0,im["bottom"]-im["top"]) for im in page.images)
-            if image_area/(page.width*page.height)>.5 and len(text.strip())<150:
+            if (image_area/(page.width*page.height)>.5 and len(text.strip())<150) or (not text.strip() and (page.images or page.curves)):
                 ocr_pages.append(number)
                 continue
             for im in page.images:
@@ -153,9 +159,12 @@ def choose_template(blocks, schemas):
     if "organizational capacity building component" in t: return "marp_organizational_capacity","en",[]
     if "anti racism call" in t: return "marp_anti_racism_call","en",[]
     french=any(s in t for s in ["nom de votre organisme","activités de l événement","résultats de l événement"])
-    if french: return "unknown","fr",["unsupported_french_template"]
+    if french:
+        if "nombre total prévu de participants" in t:
+            return "unknown","fr",["unsupported_french_legacy_template"]
+        return "marp_events_fr","fr",["script_derived_template_requires_review"]
     if any(s in t for s in ["expected total number of participants","increase awareness of democratic institutions"]):
-        return "unknown","en",["unsupported_legacy_events_variant"]
+        return "marp_events_legacy","en",["script_derived_template_requires_review"]
     unique=["has your event changed from what was originally planned","what helped make your event a success","total number of participants for the event"]
     if sum(s in t for s in unique)>=2 or "events component" in t: return "marp_events","en",[]
     return "unknown","unknown",["unknown_template"]
@@ -204,6 +213,8 @@ def normalize_value(text, typ, active=None, corrected=False):
     if typ=="Rating":
         if s in {"To a large extent","To some extent","To a little extent","To no extent","N/A"}: return s,[]
         return None,["rating_layout_unreadable"]
+    if typ=="Email" and not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+",s):
+        return s,["email_format_requires_review"]
     if typ=="Date":
         try:
             if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",s): return None,["ambiguous_date"]
@@ -316,6 +327,32 @@ def question_segments(cell, fields):
     return segments
 
 
+def canonicalize_labels(blocks, fields):
+    """Replace explicit label aliases only at cell/line starts, longest first."""
+    aliases=[]
+    for f in fields:
+        variants=list(f.get("aliases", []))
+        if f["response_type"] == "Date" and "YYYY-MM-DD" in f["question"] and "date:" in f["question"].lower():
+            variants.append(f["question"].split(":",1)[0])
+        if f["question"] == "E-mail address": variants += ["Email address", "Email", "E-mail"]
+        if f["question"] == "First name": variants += ["Given name"]
+        if f["question"] == "Last name": variants += ["Surname", "Family name"]
+        for alias in variants:
+            aliases.append((alias,f["question"]))
+    aliases.sort(key=lambda pair: len(pair[0]),reverse=True)
+    for block in blocks:
+        for cell in block.cells:
+            for attr in ("text","active"):
+                value=getattr(cell,attr)
+                for alias,canonical in aliases:
+                    pattern=r"(?m)^([ \t]*(?:\d+(?:\.\d+)*[.)]?\s+)?)"+wording_pattern(alias)+r"(?!\w)[:?]*"
+                    # Do not replace a short alias inside an already complete label.
+                    if norm(value).startswith(norm(canonical)): continue
+                    value=re.sub(pattern,lambda m: m[1]+canonical,value,flags=re.I)
+                setattr(cell,attr,value)
+    return blocks
+
+
 def assemble_headings(blocks, fields):
     """Join wrapped non-table headings only while they remain a known prefix."""
     out=[]; i=0
@@ -372,28 +409,47 @@ def prepare_ocb_blocks(blocks, fields):
     return compacted
 
 
-def extract(path):
+def extract(path, reader=None):
     schemas=load_schemas()
-    blocks,ocr_pages,warnings=read_docx(path) if path.suffix.lower()==".docx" else read_pdf(path)
+    blocks,ocr_pages,warnings=reader(path) if reader else (read_docx(path) if path.suffix.lower()==".docx" else read_pdf(path))
+    # Skip entire unread documents, including mixed text/scan PDFs, so a partial
+    # answer set cannot be mistaken for a complete submission. Never run OCR.
+    readable=" ".join(c.text for b in blocks for c in b.cells).strip()
+    image_only_word=(path.suffix.lower()==".docx" and len(readable)<150 and "embedded_images_require_review" in warnings)
+    if ocr_pages or image_only_word:
+        return {"template_id":"unknown","language":"unknown","ocr_pages":ocr_pages,
+                "responses":[],"activities":[],"unmatched":[],"status":"skipped_ocr_required",
+                "review_required":True,"review_reasons":warnings+["ocr_required_skipped_without_processing"]+
+                    (["unread_pages_"+",_".join(map(str,ocr_pages))] if ocr_pages else [])}
     template,language,detected_warnings=choose_template(blocks,schemas)
     warnings+=detected_warnings
     if ocr_pages: warnings.append("ocr_required")
     result={"template_id":template,"language":language,"ocr_pages":ocr_pages,"responses":[],"activities":[],"unmatched":[],"review_reasons":warnings}
     if template=="unknown":
         result["status"]="ocr_required" if ocr_pages else "unsupported_template"
+        result["review_required"]=True
+        result["unmatched"]=[{"text":"\n".join(c.text for c in b.cells),"source_location":b.location,
+                              "review_reason":"unmapped_questionnaire"} for b in blocks if any(c.text.strip() for c in b.cells)]
         return result
-    fields=schemas[template]; pending={}; current=None; activity_mode=False; columns=None
+    fields=schemas[template]
+    extra_schema=json.loads((ROOT/"schemas"/(template.removeprefix("marp_")+".json")).read_text(encoding="utf-8")) if template in {"marp_events_legacy","marp_events_fr"} else None
+    if template=="marp_events":
+        extra_schema=json.loads((ROOT/"schemas/events_variants.json").read_text(encoding="utf-8"))
+        extra_schema["sections"]=[]
+    blocks=canonicalize_labels(blocks, fields)
+    pending={}; current=None; activity_mode=False; columns=None
     boundary_fields=fields+[{"field_id":"__signoff", "question":"Name and signature (required)"}]
     ocb_schema=json.loads((ROOT/"schemas/organizational_capacity.json").read_text(encoding="utf-8")) if template=="marp_organizational_capacity" else None
     if ocb_schema: blocks=prepare_ocb_blocks(blocks,fields)
-    blocks=assemble_headings(clean_blocks(blocks,ocb_schema["printed_instructions"] if ocb_schema else ()),fields)
+    blocks=assemble_headings(clean_blocks(blocks,(ocb_schema or extra_schema or {}).get("printed_instructions",())),fields)
     rating_values={};rating_options=ocb_schema["rating_options"] if ocb_schema else []
     lanes={}; lane_table=None; lane_width=0; ambiguous_pending=False
     section_names={norm(f["section"]) for f in fields}
-    section_names.update({"name and signature required", "name and signature"})
+    section_names.update({"name and signature required", "name and signature", "project contact name", "contact person", "nom et signature", "nom de la personne ressource"})
     if template=="marp_anti_racism_call":
         section_names.update(norm(s) for s in json.loads((ROOT/"schemas/anti_racism_call.json").read_text(encoding="utf-8"))["sections"].values())
         warnings.append("template_inventory_has_unresolved_source_labels")
+    if extra_schema: section_names.update(norm(value) for value in extra_schema["sections"])
     if ocb_schema: section_names.update(norm(value) for value in ocb_schema["sections"].values())
     def append_response(fid,c,location):
         pending.setdefault(fid,{"chunks":[],"active":[],"locations":[],"corrected":False,"matches":0})
@@ -468,6 +524,11 @@ def extract(path):
                         current=f["field_id"];append_response(current,c,b.location);pending[current]["matches"]+=1
                 append_response(first["field_id"],b.cells[1],b.location)
                 continue
+        if template=="marp_events_fr" and n.startswith("le français et l anglais sont les deux"):
+            current=None;lanes={};ambiguous_pending=True
+            warnings.append("official_languages_question_needs_french_template")
+            result["unmatched"].append({"text":joined,"source_location":b.location,"review_reason":"unmapped_question"})
+            continue
         # Section boundaries stop accumulation, so boilerplate is not treated as an answer.
         partial_section=(not b.is_table and len(n.split())>=4 and any(s.startswith(n+" ") for s in section_names))
         if n in section_names or partial_section or re.fullmatch(r"[a-g] (?:recipient|event|project|events).*",n) and len(n.split())<8:
@@ -479,7 +540,23 @@ def extract(path):
                 continue
         # Each label/answer segment is assigned independently. Column lanes
         # retain side-by-side header-to-answer relationships on following rows.
-        segmented=[question_segments(c,boundary_fields) for c in b.cells]
+        context_field=current
+        contextual=[]
+        for cell in b.cells:
+            # Resolve repeated prompts only against a recognized parent question.
+            value=cell.text
+            for parent, segment in question_segments(cell,boundary_fields):
+                if parent: context_field=parent["field_id"]
+            eligible=[f for f in fields if f.get("after_field")==context_field and f.get("contextual_prompt")]
+            if len(eligible)==1:
+                target=eligible[0]
+                pattern=wording_pattern(target["contextual_prompt"])
+                for attr in ("text", "active"):
+                    original=getattr(cell,attr)
+                    setattr(cell,attr,re.sub(pattern,lambda m: target["question"],original,count=1,flags=re.I))
+                if cell.text != value: context_field=target["field_id"]
+            contextual.append(question_segments(cell,boundary_fields))
+        segmented=contextual
         has_labels=any(f for parts in segmented for f,_ in parts)
         if has_labels: ambiguous_pending=False
         combined_headers=(len(b.cells)==1 and len(segmented[0])>1 and
@@ -535,6 +612,9 @@ def extract(path):
         elif p:
             raw=remove_prompt("\n".join(p["chunks"]),f["question"])
             active=remove_prompt("\n".join(p["active"]),f["question"])
+            if f["response_type"]=="Date":
+                raw=re.sub(r"^\s*(?:YYYY\s*-\s*MM\s*-\s*DD|AAAA\s*-\s*MM\s*-\s*JJ)\s*[:)]*\s*","",raw,flags=re.I)
+                active=re.sub(r"^\s*(?:YYYY\s*-\s*MM\s*-\s*DD|AAAA\s*-\s*MM\s*-\s*JJ)\s*[:)]*\s*","",active,flags=re.I)
             if ocb_schema and f["response_type"]=="Currency":
                 raw=re.sub(r"^[\s:$]*","",raw);active=re.sub(r"^[\s:$]*","",active)
             if ocb_schema and re.fullmatch(r"[\s()$]*",raw): raw="";active=""
@@ -545,8 +625,8 @@ def extract(path):
             if presence=="blank" and "optional" in (f.get("condition","")+f["question"]).casefold():
                 reasons=[reason for reason in reasons if reason!="blank_answer"]
         else:
-            raw=None;value=None;reasons=["question_missing"];locations=[];presence="missing"
-        if f.get("wording_status")=="incomplete_in_source": reasons.append("source_question_incomplete")
+            raw=None;value=None;reasons=[] if f.get("optional_variant") else ["question_missing"];locations=[];presence="missing"
+        if f.get("wording_status") in {"incomplete_in_source", "reconstructed_from_script"}: reasons.append("source_question_requires_confirmation")
         if ocr_pages: reasons.append("document_contains_unread_pages")
         result["responses"].append({"field_id":fid,"question":f["question"],"answer_text":raw,"normalized_answer":value,
              "presence":presence,"source_locations":locations,"review_required":bool(reasons),"review_reasons":reasons})

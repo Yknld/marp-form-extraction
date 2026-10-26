@@ -18,7 +18,7 @@ def unsupported_reason(path):
     return "unsupported_file_type"
 
 
-def run(input_path, output):
+def run(input_path, output, reader=None):
     input_path=Path(input_path).resolve();output=Path(output).resolve()
     if not input_path.exists(): raise ValueError("Input path does not exist")
     if input_path==output or output in input_path.parents: raise ValueError("Output must not equal or contain the input directory")
@@ -32,16 +32,21 @@ def run(input_path, output):
     results=[]
     for i,path in enumerate(paths,1):
         relative=str(path.relative_to(base))
+        print(f"[{i}/{len(paths)}] Reading {relative}...",flush=True)
         try:
-            if path.suffix.lower() not in {".pdf",".docx"}:
-                r={"template_id":"unknown","language":"unknown","status":"unsupported_format","review_required":True,"review_reasons":[unsupported_reason(path)],"responses":[],"activities":[],"unmatched":[]}
-            else:r=extract(path)
+            if path.suffix.lower() not in {".pdf", ".docx"}:
+                reason=unsupported_reason(path)
+                status="skipped_ocr_required" if reason=="image_ocr_required" else "unsupported_format"
+                r={"template_id":"unknown","language":"unknown","status":status,"review_required":True,"review_reasons":[reason],"responses":[],"activities":[],"unmatched":[]}
+            else:
+                r=extract(path, reader=reader)
         except Exception as exc:
-            r={"template_id":"unknown","language":"unknown","status":"error","review_required":True,"review_reasons":["file_read_failed"],"error":f"{type(exc).__name__}: {exc}","responses":[],"activities":[],"unmatched":[]}
+            r={"template_id":"unknown","language":"unknown","status":"error","review_required":True,"review_reasons":["file_read_failed"],"error":type(exc).__name__,"responses":[],"activities":[],"unmatched":[]}
         r.update(submission_id=path.stem,relative_path=relative)
         if submission_counts[path.stem.casefold()]>1:r["review_reasons"].append("duplicate_submission_id")
         r["review_required"]=bool(r["review_reasons"] or r["status"]!="extracted" or any(a["review_required"] for a in r.get("responses",[])+r.get("activities",[])))
         results.append(r)
+        workbook(results, output/"extracted_responses.xlsx")
         print(f"[{i}/{len(paths)}] {relative}: {r['status'].replace('_',' ')}",flush=True)
     for relative in ignored:
         results.append(dict(submission_id=Path(relative).stem,relative_path=relative,template_id="unknown",language="unknown",status="skipped",review_required=False,review_reasons=[],responses=[],activities=[],unmatched=[]))
@@ -53,10 +58,19 @@ def run(input_path, output):
 
 def main():
     p=argparse.ArgumentParser(description="Extract local MARP Word/PDF forms into reviewable Excel.")
-    p.add_argument("--input",required=True,type=Path);p.add_argument("--output",required=True,type=Path)
+    p.add_argument("--input", required=True, type=Path)
+    p.add_argument("--output", required=True, type=Path)
     a=p.parse_args()
-    try:run(a.input,a.output)
-    except (ValueError,OSError) as exc:p.exit(2,f"Error: {exc}\n")
+    try:
+        run(a.input,a.output)
+    except ImportError as exc:
+        p.exit(2,f"Required installed package unavailable: {exc.name}. Check the Python environment with IT; nothing was installed.\n")
+    except PermissionError:
+        p.exit(2,"Access denied. Close the results workbook and check folder permissions. The last completed save is retained.\n")
+    except (ValueError,OSError) as exc:
+        p.exit(2,f"Error: {exc}\n")
+    except KeyboardInterrupt:
+        p.exit(130,"Stopped. Completed files are saved in Excel; rerunning starts over.\n")
 
 
 if __name__=="__main__":main()

@@ -1,128 +1,103 @@
-# Extract forms into Excel
+# Extract MARP forms into Excel
 
-**Run `extract_forms.py`.** Keep the downloaded folder together: the script needs the supporting code and question definitions beside it.
+**Run `extract_forms.py`. No new packages or model downloads are required if the six existing dependencies are installed.** Keep the code folder together. This release uses `python-docx`, `pdfplumber`, `pypdf`, `openpyxl`, `pypdfium2`, and Pillow. `requirements.txt` records those dependencies; do not install or upgrade anything while your IT restriction is in effect.
 
-**To find different questionnaire versions first, run `discover_versions.py` instead.** This is a separate inventory tool; it does not extract answers into the report or change the existing extraction workflow.
+Docling and AI/OCR model dependencies are not part of this release. The extraction script does not access the network, launch Office/Acrobat, run VBA, or move source files.
 
-## Discover questionnaire versions
+## Run
 
-From inside the downloaded code folder, with Forms beside it:
-
-```powershell
-python discover_versions.py --input "..\Forms" --output "..\VersionReview"
-```
-
-Open **VersionReview → questionnaire_versions.xlsx**. The single sheet lists every file, its submission ID, candidate version group, and **Representative file to open**. Filter **Use this file as representative?** to **Yes** to find one suggested example per group. Files with insufficient evidence remain ungrouped and need manual inspection.
-
-Open the representative files locally, make copies, and remove responses from those copies before sharing templates. The script does not redact or copy originals. Its report contains filenames and IDs, which may themselves be sensitive, but no extracted answer text or question snippets.
-
-Discovery uses known question labels plus question-like wording from unfamiliar forms; it does not require the form to pass the existing template detector. It ignores font differences and uses a conservative similarity threshold. Grouping is provisional: missing questions or OCR errors may split one version into several groups, and very small revisions can still be grouped together. Similarity is a question-cue comparison, not an accuracy/confidence score. Candidate group numbers can change when the input set changes.
-
-The report is saved every 25 inspected files and at completion. Ctrl+C saves the files completed so far. Keep the workbook closed while running. Each rerun starts over and replaces the report; these are progress snapshots, not resumable checkpoints. No JSON files are generated.
-
-### Scans in version discovery
-
-Discovery can use **local Tesseract OCR** when installed. It looks on PATH and in the usual Windows Tesseract installation folders. No cloud service or download is used by the script. Python dependencies alone do not install Tesseract or its language data. Install these through your approved work-machine process if needed.
-
-If Tesseract is elsewhere, specify its executable:
+From the code folder, with Forms and Results beside it:
 
 ```powershell
-python discover_versions.py --input "..\Forms" --output "..\VersionReview" --tesseract "C:\Program Files\Tesseract-OCR\tesseract.exe"
+python extract_forms.py --input "..\Forms" --output "..\Results"
 ```
 
-The default OCR language is English. If English and French language data are installed, add `--ocr-language eng+fra`. To disable OCR, add `--ocr off`. Scanned PDFs and common image files are rendered/read locally; temporary images are removed afterward. OCR runs on PDFs with unread pages or too few question cues. Without OCR, unreadable scans appear as **Needs OCR**, not as invented questionnaire versions.
-
-Old `.doc`, archives and other unsupported formats are listed for conversion/manual review. Image-only Word documents need manual conversion to PDF for OCR. Corrupt or encrypted files are reported without stopping the batch. Discovery OCR is for grouping only; it does not yet add scan answer extraction to `extract_forms.py`.
-
-Optional tuning: `--similarity 0.96` is the default; a higher value separates more groups. At least eight question cues are required for grouping. Review representatives rather than treating candidate groups as confirmed templates.
-
-Discovery prints a **Reason** for failed/unresolved files as well as writing it to Excel. `Read failed` means document reading or question analysis failed; `OCR failed` means the OCR attempt failed; `OCR unavailable` means the startup check found an OCR installation/language issue. Any native question cues already found are retained when OCR fails, but incomplete files remain ungrouped. Zero cues after a failure does not prove that the form contains no questions. Check the Reason before changing templates. Files stored in OneDrive must be available locally to the Python process.
-
-## 1. Install once
-
-Use Python 3.10 or newer in your approved work environment. In PowerShell, replace this example location with your downloaded folder:
-
-```powershell
-python -m pip install -r "C:\Tools\marp-form-extraction\requirements.txt"
-```
-
-If Windows recognizes `py` instead of `python`, use `py` in both commands.
-
-## 2. Run
-
-Put the forms together in a folder. PDFs and Word documents can be mixed, including subfolders. Keep filenames as submission IDs, such as `001234.pdf`.
+From any other location, use the full script and folder paths:
 
 ```powershell
 python "C:\Tools\marp-form-extraction\extract_forms.py" --input "C:\MARP\Forms" --output "C:\MARP\Results"
 ```
 
-**This full-path command works from any current directory.** Use your actual paths. Keep the code folder outside your Forms folder.
+Use your actual paths. If your computer uses `py` instead of `python`, substitute `py`. Keep the code folder outside Forms. Forms can contain mixed file types and subfolders. Filenames such as `001234.pdf` become submission IDs; leading zeros remain text in Excel.
 
-## 3. Open your Excel results
+If necessary, this read-only check verifies that the existing packages can be imported by the selected Python. It installs nothing:
 
-Open `C:\MARP\Results\extracted_responses.xlsx`:
+```powershell
+python -c "import docx, pdfplumber, pypdf, openpyxl, pypdfium2, PIL; print('Existing packages available')"
+```
 
-The workbook has **one sheet**, with **one row per input file**:
+If a package is missing, check which Python environment is selected with IT. Do not install additional packages as a workaround.
 
-- **Submission ID** is the first column (from the filename, preserving leading zeros).
-- **Flagged** is the second column, immediately after Submission ID.
-- Each **question is a column heading**, with the extracted answer underneath.
-- Repeated activities are numbered inside three cells: description, completed, participant count.
-- **Flagged** and **Reason** identify files needing review and the affected questions.
-- Source file, processing status and unmatched text appear at the end.
+## Results
 
-The first two columns and header row stay visible when scrolling. Filters let you show only flagged files. Headers and answers wrap; expand row heights or use the formula bar to read long text. Matching question labels from different form versions are qualified so their answers stay separate. Questions from other form versions remain blank. Duplicate IDs remain separate rows and are flagged.
+Open **Results → extracted_responses.xlsx**. Keep the workbook closed while running.
 
-No in Flagged means no automated issue was detected, not that someone verified the answer. Compare a pilot batch against the originals before processing all submissions.
+- One sheet, one row per source file.
+- **Submission ID** first, **Flagged** second.
+- Each question is a column; separate questionnaire versions have distinct columns where needed.
+- Recognized Yes/No selections display plain **Yes** or **No**. Ambiguous choices retain their original text and a review reason.
+- Names and email addresses are separate fields. Authorized Signature is excluded; printed signatory name and date remain.
+- Activities retain their correspondence through numbered entries within cells.
+- Reason, Source file, Status, and Unmatched text appear at the end.
 
-The only generated result is **extracted_responses.xlsx**. There are no hash columns, JSON outputs or checkpoint files. Every run processes all inputs again and replaces the workbook: save manual review edits in a separate copy. Existing JSON/checkpoint files from older versions are not used or deleted. Duplicate filenames (submission IDs) are still flagged; identical content under different IDs is no longer detected.
+The workbook is saved after **every completed file**, and again at completion. Ctrl+C leaves the last completed save available. Each run starts over and replaces the workbook; this is not resumable processing. Save manual corrections in a separate copy. Duplicate IDs remain separate flagged rows.
 
-The bundled JSON question definitions are internal settings, not output files; keep them with the script. You do not need to open or map them.
+No hashes, JSON result files, or separate diagnostic dumps are created. The JSON files in the code folder are internal question definitions. Very long answers continue in additional columns to avoid Excel's cell-length limit. Values are written as text, preserving IDs and preventing answers from becoming formulas.
 
-## What stays in the download
+## Files needing OCR
 
-| File or folder | Purpose |
+OCR is deliberately disabled in extraction.
+
+- Scanned PDFs detected as unreadable: **Skipped OCR required**, Flagged = Yes, blank answers.
+- PDFs containing both readable and unread scanned pages: the **whole file is skipped**, with unread page numbers in Reason. This prevents incomplete answers appearing complete.
+- Image-only Word documents and standalone images: skipped for OCR, with the ID retained.
+- Word files with both text and embedded images: readable text may be extracted, but embedded images require review.
+- Old `.doc`, `.rtf`, `.odt`, and other unsupported formats: retained as flagged rows needing conversion.
+- Corrupt/password-protected files: retained as error rows; other files continue.
+- Temporary/hidden files and Word lock files: listed as skipped.
+
+Nothing is deleted or moved. Filter Status to collect the OCR backlog later. The scan detector is a heuristic: an existing bad OCR text layer or an unusual image layout can still need manual review. Blank/unrecognized documents are never treated as verified answers.
+
+## Questionnaire rules
+
+The Python parser uses the supplied template definitions and selected wording/cleanup rules recovered from the legacy VBA scripts. It does not run the macros or use their hard-coded workbook columns.
+
+| Questionnaire | Coverage |
 | --- | --- |
-| `extract_forms.py` | The script you run |
-| `discover_versions.py` | Find candidate questionnaire versions before preparing blank templates |
-| `requirements.txt` | Dependencies to install once |
-| `marp/` | Required supporting code |
-| `questions.json` | Required Events question definitions |
-| `schemas/` | Required Anti-Racism question definitions |
-| `README.md` | These instructions |
+| English Events | Existing supplied template, plus alternate contact labels, date labels, participant-count/reach wording and known instructions |
+| Anti-Racism Call | Existing supplied template and repeated activity tables; incomplete source labels remain flagged |
+| Organizational Capacity Building | Existing supplied template, activity tables, five ratings and separate follow-ups |
+| Older English Events (form type 2 in the VBA scripts) | Separate provisional definition, including four Yes/No outcomes and four separate “Explain how” answers |
+| French Events (form type 1 in the VBA scripts) | Provisional definition recovered from the French extraction and cleaning scripts |
 
-Development fixtures, generators, tests and inventory workbooks were removed from the current download. They are recoverable in Git history.
+Script-derived definitions are flagged for review. Some labels were reconstructed from script fragments and require confirmation against blank forms. The older French questionnaire remains unsupported. Unrecognized questionnaire text is retained in Unmatched text rather than assigned to guessed question columns. French official-language wording not established by the supplied scripts is also left for review.
 
-## Limits
+Known printed instructions are removed by specific wording, including wrapped text. Genuine respondent notes are preserved; the parser does not delete every sentence starting with “Note.” Repeated questions, missing fields, malformed email addresses, ambiguous dates/numbers, multiple selections, and unclear table relationships generate review reasons.
 
-Supports the supplied English MARP Events Component, Anti-Racism Call, and Organizational Capacity Building forms in DOCX and selectable-text PDF. Runs locally without Office, Acrobat or a network connection after installation. Source files are read only.
+The parser preserves table cells and recognizes question boundaries. Ambiguous text stays under Unmatched text where possible. It does not use the VBA fallback that grabbed the next 500 characters when an ending phrase was missing.
 
-Scans need OCR, which this script does not perform. Other formats appear in the sheet with a review reason: older Word/RTF/ODT files need conversion, images need OCR, and archives need unpacking. Unreadable/password-protected files are reported without stopping other files. Hidden/temporary files and Word lock files are listed as skipped rows. The selected output folder is excluded.
+## Review limitations
 
-French and unknown templates, ambiguous choices and unsupported visual content require review. PDF drawing marks, crossed-out choices and interactive checkbox values are not reliably interpreted. Word images/text boxes may require manual review. Review flags cannot detect every mistake. Very long answers continue in additional columns on the same sheet, preserving the full text and one row per file. Rows may be taller than Excel can display; inspect the cell contents when necessary.
+Flagged = No means no automated issue was detected, not that a human verified the answer. Start with a small batch and compare it against originals before processing all submissions. Font metadata warnings are summarized in Reason. Drawing-based checkmarks, crossed-out PDF choices, interactive fields, unusual layouts, and previously unseen question wording can still need manual review.
 
-The Excel-only output has been checked for mixed formats, leading-zero IDs, duplicate-ID flags, long-text preservation and formula safety. The earlier synthetic benchmark matched 1,829 of 1,832 ordinary answers and all 70 activity rows; three unresolved selections were flagged. These development results do not establish accuracy on real submissions or throughput for 1,000+ files.
+Python reads Word directly: there is no need to convert readable `.docx` files to PDF. Converting a scan to PDF does not make its text readable.
 
-Keep real forms and extracted responses in your approved work environment, outside this public repository.
+## Optional questionnaire inventory
 
-### PDF font warnings and unrecognized forms
+`discover_versions.py` groups candidate questionnaire versions in a separate report. OCR is off by default:
 
-Missing or invalid PDF font measurements (`FontBBox`) do not necessarily stop extraction. Repeated instances of this warning are summarized once in that file's Excel Reason column and set Flagged to Yes. Compare its extracted text against the original; this change does not repair the PDF. Other PDF diagnostics remain visible.
+```powershell
+python discover_versions.py --input "..\Forms" --output "..\VersionReview" --ocr off
+```
 
-`Unsupported template` is separate: the text did not match a supported form version. The file keeps its row and submission ID, with a review reason, but its question cells are not filled. Consult Reason to distinguish an unknown template from a recognized unsupported French or legacy version.
+This produces `questionnaire_versions.xlsx`, with IDs, candidate groups, and representative filenames. It does not redact documents or export response snippets. Grouping is provisional. Its earlier Tesseract option remains available only for environments where that software is already approved and installed; extraction never invokes it.
 
-### Answers without printed instructions
+## Files to keep
 
-Authorized Signature is excluded from the output and does not generate missing-signature flags. Printed signatory name and sign-off date remain separate columns. The parser still recognizes signature headings to keep that text out of preceding answers.
+Keep `extract_forms.py`, `marp/`, `questions.json`, and `schemas/` together. `discover_versions.py` is optional. `requirements.txt` is the dependency inventory. `tests/` contains small fictional regression tests and is not needed to run extraction.
 
-Known printed bilingual-material and authorized-signatory notes are removed, including wrapped versions. Respondent notes and quoted question labels are preserved. The cleaner uses specific wording; it does not discard every line starting with Note. Other unrecognized instructions may still require review.
+Run the tests with `python -m unittest discover -s tests -v`. Development validation uses fictional forms; it does not establish accuracy on classified submissions. Keep real forms and results in your approved work environment, outside this public repository.
 
-Multiple question labels in a cell and side-by-side table headings are handled separately. Where the following answers cannot be assigned confidently, their text is kept under Unmatched text and flagged instead of being guessed. The Excel-only command and output path are unchanged.
+## Validation of this release
 
-### Organizational Capacity Building version
-
-The Organizational Capacity Building component is detected separately. Its 38 non-signature fields include project costs, activity-change/location follow-ups, five result ratings with separate explanations, and printed signatory name/date. Activity cells include description, completion, results achieved, and participant count.
-
-Rating selections are mapped to their column labels (large/some/little/no extent or N/A). Multiple selections, unreadable marks, and unselected ratings are flagged. Empty activity rows with unselected boxes are ignored; checked rows without descriptions remain flagged. The default financial-report request and other printed instructions are not exported as answers.
-
-Validation covers a fictional Word form and a bordered-table PDF conversion, including narrow/wrapped rating columns and page continuations. Borderless PDFs and materially changed layouts can still need review; OCR answer extraction remains outside the extraction script. Only template wording is published, not the supplied document or its remaining selections.
+On the Mac, using the existing dependency stack: 12 regression tests passed; 1,921 of 1,924 ordinary-answer comparisons matched across the existing synthetic corpus, fictional capacity-building forms, and new script-derived template probes. The three mismatches were existing crossed-out PDF selections, retained as unresolved and flagged. All 70 reference activity rows matched. Six scan variants, including a mixed text/scan PDF, were skipped with no answers. A mixed nine-file batch retained corrupt and unsupported files as review rows. The new-template probes use generated labels, so they test parser mechanics rather than independently confirming the reconstructed wording. Windows runtime validation and a local pilot on actual forms are still needed.

@@ -8,3 +8,6 @@ private/
 results/
 runs/
 *.inspect.ndjson
+
+.venv-*/
+models/

@@ -82,7 +82,7 @@ def failure_reason(exc, stage):
     if isinstance(exc, OCRFailure): return str(exc)
     if isinstance(exc, subprocess.TimeoutExpired): return "OCR timed out on a page; try a smaller or clearer PDF"
     if isinstance(exc, (ImportError, ModuleNotFoundError)):
-        return "A required Python package could not load; run: python -m pip install -r requirements.txt"
+        return "A required existing Python package could not load; check the selected Python environment with IT. Nothing was installed."
     if isinstance(exc, PermissionError): return "Access denied; check file permissions and local availability"
     if isinstance(exc, FileNotFoundError): return "File or required program not found; ensure the source is downloaded locally"
     if type(exc).__name__ in {"PDFPasswordIncorrect", "FileNotDecryptedError", "WrongPasswordError"}:
@@ -279,7 +279,7 @@ def save_report(records, target, threshold):
     return len(groups)
 
 
-def run(input_path, output, threshold=.96, ocr="auto", tesseract=None, language="eng"):
+def run(input_path, output, threshold=.96, ocr="off", tesseract=None, language="eng"):
     source=Path(input_path).resolve();output=Path(output).resolve()
     if not source.exists():raise ValueError("Input path does not exist")
     if source==output or output in source.parents:raise ValueError("Output must not equal or contain the input directory")
@@ -316,7 +316,7 @@ def main():
     parser=argparse.ArgumentParser(description="Discover candidate questionnaire versions locally; export a file inventory to Excel.")
     parser.add_argument("--input",required=True,type=Path);parser.add_argument("--output",required=True,type=Path)
     parser.add_argument("--similarity",type=float,default=.96,help="Grouping threshold, 0.5 to 1 (default .96)")
-    parser.add_argument("--ocr",choices=["auto","off"],default="auto")
+    parser.add_argument("--ocr",choices=["auto","off"],default="off")
     parser.add_argument("--tesseract",help="Optional full path to tesseract.exe")
     parser.add_argument("--ocr-language",default="eng",help="Installed Tesseract language, e.g. eng+fra")
     args=parser.parse_args()
